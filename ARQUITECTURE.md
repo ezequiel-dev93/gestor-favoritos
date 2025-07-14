@@ -1,11 +1,6 @@
+## ✅ `ARCHITECTURE` — Documentación técnica del proyecto
 
-
-
----
-
-## ✅ `ARCHITECTURE.md` — Documentación técnica del proyecto
-
-```md
+```
 # 🏗️ Arquitectura del Proyecto
 
 Este documento describe cómo está estructurado el proyecto y cómo se organiza el código para facilitar su mantenimiento, escalabilidad y comprensión por parte de otros colaboradores.
@@ -48,19 +43,6 @@ src/
 ├── App.tsx                 # Componente principal
 ├── main.tsx                # Entrada principal del proyecto
 └── styles/                 # Tailwind y estilos globales
-
-
-## 📌 Conceptos clave
-Zustand se utiliza para manejar el estado de favoritos y carpetas globalmente.
-
-Separación por capas: core/, infrastructure/, y ui/ siguen principios de arquitectura limpia.
-
-DnD Kit permite reordenar elementos visualmente.
-
-Chrome Storage Sync guarda los favoritos y el orden, persistente entre sesiones y dispositivos.
-
-GSAP y TextPlugin dan animaciones suaves al título y componentes claves.
-
 
 ## ✅ Buenas prácticas
 ❌ No modificar ChromeStorageRepository.ts directamente. Si se necesita lógica nueva, crear un nuevo useCase.
