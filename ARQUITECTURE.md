@@ -1,4 +1,4 @@
-## ✅ `ARCHITECTURE` — Documentación técnica del proyecto
+## ✅ `ARCHITECTURE` Documentación técnica del proyecto
 
 ```
 # 🏗️ Arquitectura del Proyecto
