@@ -27,7 +27,7 @@ export function FavoriteDndContext({ children }: Props) {
     const oldIndex = favorites.findIndex((f) => f.id === activeId);
     const newIndex = favorites.findIndex((f) => f.id === overId);
 
-    // Si están en la misma carpeta, solo reordenamos
+    // Si están en la misma carpeta, reordenamos
     if (favorites[oldIndex]?.folder === favorites[newIndex]?.folder) {
       const reordered = arrayMove(favorites, oldIndex, newIndex);
       setFavorites(reordered);

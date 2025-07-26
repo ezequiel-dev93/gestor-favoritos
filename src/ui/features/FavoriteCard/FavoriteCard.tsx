@@ -55,8 +55,8 @@ export function FavoriteCard({ favorite, isNew = false }: Props) {
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="select-none p-3 rounded-md shadow-sm bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-600 transition-all"
     >
-      <article className="flex justify-between items-start gap-2">
-        <div className="flex-1">
+      <section className="flex justify-between items-start gap-2">
+        <article className="flex-1">
           {isEditing ? (
             <input
               value={title}
@@ -74,15 +74,15 @@ export function FavoriteCard({ favorite, isNew = false }: Props) {
               </button>
             </p>
           )}
-        </div>
+        </article>
 
-        <div className="flex items-center gap-2">
+        <article className="flex items-center gap-2">
           <button onClick={handleDelete} title="Eliminar favorito">
             <FiTrash2 className="text-red-500 hover:text-red-600" />
           </button>
           <RxDragHandleDots2 className="text-zinc-400 text-lg" />
-        </div>
-      </article>
+        </article>
+      </section>
 
       <a
         href={favorite.url}

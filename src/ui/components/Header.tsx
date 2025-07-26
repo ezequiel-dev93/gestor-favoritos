@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 
-
 export function Header() {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
@@ -17,8 +16,17 @@ export function Header() {
   }, []);
 
   return (
-    <header className="text-white px-6 py-4 shadow-md">
-      <h1 ref={titleRef} className="text-3xl font-bold tracking-wide pl-6"></h1>
+    <header className="flex items-center gap-3 text-white">
+      <img
+        src="/img/LogoTipo.webp"
+        alt="Logo Gestor de Favoritos"
+        className="w-10"
+      />
+      <h1
+        ref={titleRef}
+        className="text-2xl sm:text-3xl font-bold tracking-wide"
+      ></h1>
     </header>
   );
 }
+     

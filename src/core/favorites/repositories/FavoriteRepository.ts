@@ -1,6 +1,7 @@
 import type { Favorite } from "@/core/favorites/entities/Favorite"
 
-/* Interfaz que define el acceso al almacenamiento de favoritos */
+/* Interfaz que va a definir el acceso al almacenamiento de favoritos */
+
 export interface FavoriteRepository {
 
   getFavorites(): Promise<Favorite[]>;

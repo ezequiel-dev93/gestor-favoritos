@@ -1,13 +1,10 @@
-import { Route, Routes } from "react-router-dom";
 import { AppLayout } from "@/ui/layouts/AppLayout";
-import { FavoriteManager } from "@/pages/FavoriteManager";
+import { FolderProvider } from "@/ui/features/FolderContext/FolderProvider";
 
 export default function App() {
   return (
-    <AppLayout>
-      <Routes>
-        <Route path="/" element={<FavoriteManager />} />
-      </Routes>
-    </AppLayout>
+    <FolderProvider>
+      <AppLayout />
+    </FolderProvider>
   );
 }
