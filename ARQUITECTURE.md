@@ -58,8 +58,6 @@ Se usa manifest v3
 El build se carga desde la carpeta dist/
 
 ## 🧪 Futuras mejoras
- Migrar a framer-motion para transiciones más complejas
-
  Implementar autenticación o sincronización con cuenta externa
 
  Exportar/Importar backups manuales
