@@ -1,5 +1,3 @@
-// src/ui/hooks/useFolderOrder.ts
-
 import { useEffect, useState } from "react";
 import { getFolderOrder } from "@/core/favorites/useCases/getFolderOrder";
 import { saveFolderOrder } from "@/core/favorites/useCases/saveFolderOrder";
