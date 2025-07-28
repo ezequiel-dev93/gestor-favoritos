@@ -1,4 +1,4 @@
-# 🚀 Gestor de Favoritos Visual
+# 🚀 Gestor de Favoritos 
 
 Extensión de Chrome desarrollada con Vite + React + TypeScript que permite gestionar tus favoritos de manera visual, ordenada y totalmente personalizada. Pensada para mejorar la experiencia al navegar y organizar tus links importantes en carpetas con soporte drag & drop.
 
