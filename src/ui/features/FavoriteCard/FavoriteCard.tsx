@@ -1,120 +1,120 @@
+import { FiEdit3, FiTrash } from "react-icons/fi";
 import { useState } from "react";
-import { useDraggable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
-import type { Favorite } from "@/core/favorites/entities/Favorite";
-import { FiExternalLink, FiTrash2, FiEdit3 } from "react-icons/fi";
-import { RxDragHandleDots2 } from "react-icons/rx";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-interface Props {
-  favorite: Favorite;
-  isNew?: boolean;
+interface Favorite {
+  id: string;
+  title: string;
+  url: string;
+  folder?: string;
 }
 
-export function FavoriteCard({ favorite, isNew = false }: Props) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: favorite.id,
-  });
+interface FavoriteCardProps {
+  favorite: Favorite;
+}
 
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : 1,
-    cursor: "grab",
-  };
-
+export function FavoriteCard({ favorite }: FavoriteCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState(favorite.title);
   const updateFavoriteTitle = useFavoritesStore(s => s.updateFavoriteTitle);
   const deleteFavorite = useFavoritesStore(s => s.deleteFavorite);
 
-  const [isEditing, setIsEditing] = useState(isNew);
-  const [title, setTitle] = useState(favorite.title);
-
-  const handleRename = async () => {
-    if (title.trim() === "") {
+  const handleEdit = () => {
+    if (newTitle.trim() === "") {
       toast.error("El título no puede estar vacío");
       return;
     }
-    await updateFavoriteTitle(favorite.id, title.trim());
+
+    if (newTitle !== favorite.title) {
+      updateFavoriteTitle(favorite.id, newTitle);
+      toast.success("Título actualizado");
+    }
+
     setIsEditing(false);
-    toast.success("Título actualizado");
   };
 
-  const handleDelete = async () => {
-    await deleteFavorite(favorite.id);
+  const handleDelete = () => {
+    deleteFavorite(favorite.id);
     toast.success("Favorito eliminado");
   };
 
   return (
-    <motion.section
-      ref={setNodeRef}
-      style={style}
-      layout
-      initial={{ scale: 0.95, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.95, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className="select-none p-3 rounded-md shadow-sm bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-600 transition-all"
-      {...listeners}
-      {...attributes}
-      role="listitem"
-      tabIndex={0}
+    <article
+      className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
     >
-      <section className="flex justify-between items-start gap-2">
-        <article className="flex-1">
-          {isEditing ? (
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onBlur={handleRename}
-              onKeyDown={(e) => e.key === "Enter" && handleRename()}
-              autoFocus
-              aria-label="Editar título"
-              className="w-full text-sm font-semibold text-blue-600 bg-transparent border-b border-blue-300 focus:outline-none focus:ring-0"
-            />
-          ) : (
-            <p className="font-semibold text-sm text-blue-600 flex items-center gap-1">
-              {favorite.title}
-              <button
-                onClick={() => setIsEditing(true)}
-                title="Editar título"
-                aria-label="Editar título"
-              >
-                <FiEdit3 className="text-zinc-400 hover:text-blue-500" />
-              </button>
-            </p>
-          )}
-        </article>
+      <img
+        src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
+        alt="favicon"
+        className="w-6 h-6 rounded"
+        style={{ minWidth: 24, minHeight: 24 }}
+      />
 
-        <article className="flex items-center gap-2">
+      <div className="flex-1">
+        {isEditing ? (
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              className="w-full rounded border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleEdit();
+                if (e.key === "Escape") {
+                  setIsEditing(false);
+                  setNewTitle(favorite.title);
+                }
+              }}
+              aria-label="Editar título del favorito"
+              autoFocus
+            />
+            <button
+              onClick={handleEdit}
+              className="text-sm text-blue-600 hover:underline"
+              aria-label="Guardar título"
+            >
+              Guardar
+            </button>
+          </div>
+        ) : (
+          <a
+            href={favorite.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-sm text-white hover:underline flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+            aria-label={`Abrir ${favorite.title}`}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") window.open(favorite.url, "_blank", "noopener,noreferrer");
+            }}
+            tabIndex={0}
+            role="link"
+          >
+            {favorite.title}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setIsEditing(true);
+              }}
+              title="Editar título"
+              aria-label="Editar título"
+            >
+              <FiEdit3 className="text-zinc-400 hover:text-blue-500" />
+            </button>
+          </a>
+        )}
+
+        <div className="mt-2 flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
+          <span className="truncate">{new URL(favorite.url).hostname}</span>
           <button
             onClick={handleDelete}
+            className="hover:text-red-600"
             title="Eliminar favorito"
             aria-label="Eliminar favorito"
           >
-            <FiTrash2 className="text-red-500 hover:text-red-600" />
+            <FiTrash />
           </button>
-          <RxDragHandleDots2
-            className="text-zinc-400 text-lg"
-            aria-hidden="true"
-          />
-        </article>
-      </section>
-
-      <a
-        href={favorite.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-1 mt-1 text-xs text-gray-500 hover:underline"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") window.open(favorite.url, "_blank", "noopener,noreferrer");
-        }}
-        tabIndex={0}
-        role="link"
-        aria-label={`Abrir ${favorite.title}`}
-      >
-        <FiExternalLink /> {favorite.url}
-      </a>
-    </motion.section>
+        </div>
+      </div>
+    </article>
   );
 }

@@ -7,9 +7,8 @@ import { FloatingOpenButton } from '@/ui/components/FloatingOpenButton';
 import { Header } from '@/ui/components/Header';
 import { Footer } from '@/ui/components/Footer';
 import { SearchInput } from '@/ui/components/Search';
-import FolderList from '@/ui/components/FolderList';
+import FolderList from '@/ui/features/FolderList/FolderList';
 import { AddFavoriteModal } from '@/ui/features/AddFavoriteModal/AddFavoriteModal';
-import { FavoriteManager } from '@/pages/FavoriteManager';
 import { useFavoritesStore } from '@/ui/hooks/useFavoritesStore';
 
 
@@ -62,7 +61,7 @@ export default function AsidePanel() {
           className="fixed inset-0 bg-black/30 z-40 flex items-start justify-end"
           onClick={handleOutsideClick}
         >
-          <motion.section
+          <motion.aside
             ref={panelRef}
             initial={{ y: '-100%', opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -117,13 +116,12 @@ export default function AsidePanel() {
                   showAddFolder={showAddFolder}
                   setShowAddFolder={setShowAddFolder}
                 />
-                <FavoriteManager />
               </section>
               <section className="p-2 border-t border-zinc-300 dark:border-zinc-700">
                 <Footer />
               </section>
             </section>
-          </motion.section>
+          </motion.aside>
         </section>
       ) : null}
       {!open && <FloatingOpenButton onClick={() => setOpen(true)} />}

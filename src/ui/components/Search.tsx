@@ -1,4 +1,4 @@
-import { useFavorites } from "@/ui/hooks/useFavorites";
+import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export function SearchInput() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const { searchFavorites } = useFavorites();
+  const searchFavorites = useFavoritesStore(s => s.searchFavorites);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

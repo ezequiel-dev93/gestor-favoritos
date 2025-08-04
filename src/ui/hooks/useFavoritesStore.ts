@@ -25,6 +25,7 @@ interface FavoritesState {
   setFavorites: (favorites: Favorite[]) => void;
   addFolder: (folderName: string) => Promise<void>;
   saveFavoritesOrder: (newOrder: Favorite[]) => Promise<void>;
+  searchFavorites: (query: string) => Promise<void>;
 }
 
 
@@ -122,5 +123,27 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   saveFavoritesOrder: async (newOrder) => {
     const repo = new ChromeStorageRepository();
     await repo.saveFavorites(newOrder);
+  },
+
+  searchFavorites: async (query: string) => {
+    if (!query || query.trim() === "") {
+      await get().loadAllFavorites();
+      return;
+    }
+    set({ isLoading: true });
+    try {
+      const repo = new ChromeStorageRepository();
+      // Import dinámico para evitar ciclo si es necesario
+      const { searchFavorites } = await import("@/core/favorites/useCases/searchFavorites");
+      const results = await searchFavorites(query, repo);
+      set({ favorites: results });
+    } catch (error) {
+      // Notificación opcional si tienes notifyError
+      if (typeof window !== 'undefined' && window.console) {
+        console.error("Error en búsqueda de favoritos:", error);
+      }
+    } finally {
+      set({ isLoading: false });
+    }
   },
 }));
