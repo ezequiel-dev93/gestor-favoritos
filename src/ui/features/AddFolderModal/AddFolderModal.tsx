@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { FolderExplorerModal } from "@/ui/features/FolderExplorerModal/FolderExplorerModal.tsx";
+import { flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
 
 interface AddFolderModalProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ interface AddFolderModalProps {
 
 const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
   const [folderName, setFolderName] = useState("");
-  const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
+  const [selectedParentPath, setSelectedParentPath] = useState<string[] | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(false);
 
   const folders = useFavoritesStore((state) => state.folders);
@@ -19,14 +20,15 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
   const handleCreateFolder = async () => {
     const name = folderName.trim();
     if (name === "") return;
-    await addFolder(name);
+    const path = selectedParentPath ? [...selectedParentPath, name] : [name];
+    await addFolder(path);
     onClose();
     setFolderName("");
-    setSelectedParentId(null);
+    setSelectedParentPath(null);
   };
 
-  const handleExplorerSelect = (folderId: string | null) => {
-    setSelectedParentId(folderId);
+  const handleExplorerSelect = (folderPath: string[] | null) => {
+    setSelectedParentPath(folderPath);
     setExplorerOpen(false);
   };
 
@@ -80,22 +82,20 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
               <select
                 id="folder-parent"
                 name="folder-parent"
-                value={selectedParentId || ""}
+                value={selectedParentPath ? selectedParentPath.join("/") : ""}
                 onChange={(e) => {
                   if (e.target.value === "__explore__") {
                     setExplorerOpen(true);
                   } else {
-                    setSelectedParentId(e.target.value || null);
+                    setSelectedParentPath(e.target.value ? e.target.value.split("/") : null);
                   }
                 }}
                 className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-transparent text-zinc-900 dark:text-white"
                 aria-label="Seleccionar carpeta contenedora"
               >
                 <option value="">Raíz (sin carpeta)</option>
-                {folders.map((folder) => (
-                  <option key={folder} value={folder}>
-                    {folder}
-                  </option>
+                {flattenFolderPaths(folders).map((pathArr) => (
+                  <option key={pathArr.join("/")} value={pathArr.join("/")}>{pathArr.join(" / ")}</option>
                 ))}
                 <option value="__explore__">📂 Seleccionar otra carpeta...</option>
               </select>

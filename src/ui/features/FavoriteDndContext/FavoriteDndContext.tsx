@@ -4,7 +4,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { updateFavorite } from "@/core/favorites/useCases/updateFavorite";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { ChromeStorageRepository } from "@/infrastructure/storage/ChromeStorageRepository";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/core/utils/notify";
 
 interface Props {
   children: React.ReactNode;
@@ -32,7 +32,7 @@ export function FavoriteDndContext({ children }: Props) {
       const reordered = arrayMove(favorites, oldIndex, newIndex);
       setFavorites(reordered);
       await saveFavoritesOrder(reordered);
-      toast.success("Orden actualizado");
+      notifySuccess("Orden actualizado");
       return;
     }
 
@@ -42,10 +42,10 @@ export function FavoriteDndContext({ children }: Props) {
 
     try {
       await updateFavorite(favorite.id, { ...favorite, folder: overId }, repo);
-      toast.success("Favorito movido a otra carpeta");
+      notifySuccess("Favorito movido a otra carpeta");
       await loadFavoritesByFolder();
     } catch (error) {
-      toast.error("Error al mover el favorito");
+      notifyError("Error al mover el favorito");
       console.error(error);
     }
   };

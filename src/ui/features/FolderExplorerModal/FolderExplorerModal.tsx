@@ -1,58 +1,61 @@
 import React, { useState } from "react";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
-import { toast } from "sonner";
+import { notifyError } from "@/core/utils/notify";
+import type { FolderNode } from "@/core/favorites/entities/FolderNode";
+import { flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
 
 interface FolderExplorerModalProps {
   open: boolean;
-  folders: string[];
-  onSelect: (folderName: string) => void;
+  folders: FolderNode[];
+  onSelect: (folderPath: string[]) => void;
   onClose: () => void;
 }
 
-export const FolderExplorerModal: React.FC<FolderExplorerModalProps> = ({
-  open,
-  folders,
-  onSelect,
-  onClose,
-}) => {
-  const [selectedName, setSelectedName] = useState<string>(folders[0] || "");
-  const [localFolders, setLocalFolders] = useState<string[]>(folders);
+export const FolderExplorerModal: React.FC<FolderExplorerModalProps> = (props) => {
+  const { open, folders, onSelect, onClose } = props;
+  const allPaths = flattenFolderPaths(folders);
+  const [selectedPath, setSelectedPath] = useState<string[]>(allPaths[0] || []);
   const [newFolderName, setNewFolderName] = useState("");
+  const [parentPath, setParentPath] = useState<string[]>([]);
   const [error, setError] = useState("");
   const addFolder = useFavoritesStore((state) => state.addFolder);
 
   React.useEffect(() => {
-    setLocalFolders(folders);
+    // Si cambian las carpetas, resetear selección
+    const newAllPaths = flattenFolderPaths(folders);
+    setSelectedPath(newAllPaths[0] || []);
+    setParentPath([]);
   }, [folders]);
 
   const handleConfirm = () => {
-    if (selectedName) {
-      onSelect(selectedName);
+    if (selectedPath && selectedPath.length > 0) {
+      onSelect(selectedPath);
       onClose();
     }
   };
-const handleCreateFolder = async () => {
-  const trimmed = newFolderName.trim();
 
-  if (!trimmed) {
-    toast.error("El nombre de la carpeta es obligatorio", {
-      description: "Debes ingresar un nombre antes de crear la carpeta.",
-    });
-    return;
-  }
-
-  if (localFolders.some(f => f.toLowerCase() === trimmed.toLowerCase())) {
-    toast.error("Ya existe una carpeta con ese nombre", {
-      description: "Elige un nombre diferente para evitar duplicados.",
-    });
-    return;
-  }
-
-  await addFolder(trimmed);
-  setLocalFolders((prev) => [...prev, trimmed]);
-  setSelectedName(trimmed);
-  setNewFolderName("");
-};
+  const handleCreateFolder = async () => {
+    const trimmed = newFolderName.trim();
+    if (!trimmed) {
+      notifyError("El nombre de la carpeta es obligatorio");
+      return;
+    }
+    // Verificar si ya existe en el path seleccionado
+    const exists = flattenFolderPaths(folders).some(
+      (p) => p.length === parentPath.length + 1 &&
+        p.slice(0, parentPath.length).every((seg, i) => seg === parentPath[i]) &&
+        p[parentPath.length].toLowerCase() === trimmed.toLowerCase()
+    );
+    if (exists) {
+      notifyError("Ya existe una carpeta con ese nombre en este nivel");
+      return;
+    }
+    const newPath = [...parentPath, trimmed];
+    await addFolder(newPath);
+    setNewFolderName("");
+    setParentPath([]);
+    setSelectedPath(newPath);
+  };
 
   if (!open) return null;
 
@@ -99,15 +102,16 @@ const handleCreateFolder = async () => {
             </label>
             <select
               id="folder-select"
-              value={selectedName}
-              onChange={(e) => setSelectedName(e.target.value)}
+              value={selectedPath.join("/")}
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedPath(val ? val.split("/") : []);
+              }}
               className="w-full px-4 py-2 border rounded-md dark:bg-zinc-700 dark:text-white"
               aria-describedby="folder-select-description"
             >
-              {localFolders.map((folder) => (
-                <option key={folder} value={folder}>
-                  {folder}
-                </option>
+              {allPaths.map((pathArr) => (
+                <option key={pathArr.join("/")} value={pathArr.join("/")}>{pathArr.join(" / ")}</option>
               ))}
             </select>
             <p id="folder-select-description" className="sr-only">
@@ -121,10 +125,18 @@ const handleCreateFolder = async () => {
             </legend>
 
             <article className="flex gap-2">
-              <label htmlFor="new-folder" className="sr-only">
-                Nombre de nueva carpeta
-              </label>
-
+              <label htmlFor="parent-folder" className="sr-only">Carpeta padre</label>
+              <select
+                id="parent-folder"
+                value={parentPath.join("/")}
+                onChange={e => setParentPath(e.target.value ? e.target.value.split("/") : [])}
+                className="px-2 py-2 border rounded-md dark:bg-zinc-700 dark:text-white"
+              >
+                <option value="">(Raíz)</option>
+                {allPaths.map((pathArr) => (
+                  <option key={pathArr.join("/")} value={pathArr.join("/")}>{pathArr.join(" / ")}</option>
+                ))}
+              </select>
               <input
                 id="new-folder"
                 type="text"

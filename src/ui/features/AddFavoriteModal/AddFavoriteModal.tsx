@@ -6,7 +6,7 @@ import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 
 interface AddFavoriteModalProps {
   url: string;
-  folder?: string | null;
+  folder?: string[] | null;
   open: boolean;
   onClose: () => void;
   onSave?: () => void;
@@ -21,12 +21,12 @@ export const AddFavoriteModal: React.FC<AddFavoriteModalProps> = ({
 }) => {
   const { folders } = useFavoritesStore();
   const [folderExplorerOpen, setFolderExplorerOpen] = useState(false);
-  const [selectedFolder, setSelectedFolder] = useState<string | undefined>(folder || undefined);
+  const [selectedFolder, setSelectedFolder] = useState<string[] | null>(folder || null);
 
-  const handleSelectFolder = (folderName: string) => {
-    setSelectedFolder(folderName);
+  const handleSelectFolder = (folderPath: string[]) => {
+    setSelectedFolder(folderPath);
     setFolderExplorerOpen(false);
-  };
+  }
 
   return (
     <>

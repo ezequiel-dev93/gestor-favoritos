@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/core/utils/notify";
 import { ChromeStorageRepository } from "@/infrastructure/storage/ChromeStorageRepository";
 import { addFavorite } from "@/core/favorites/useCases/addFavorite";
 import { FolderExplorerModal } from "@/ui/features/FolderExplorerModal/FolderExplorerModal";
+import { flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
 
 interface AddFavoriteFormProps {
   url: string;
-  initialFolder?: string | null;
+  initialFolder?: string[] | null;
   onSave: () => void;
 }
 
 const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, onSave }) => {
   const [name, setName] = useState("");
   const [inputUrl, setInputUrl] = useState(url || "");
-  const [folder, setFolder] = useState(initialFolder || "");
+  const [folder, setFolder] = useState<string[] | null>(initialFolder || null);
   const [showFolderModal, setShowFolderModal] = useState(false);
 
   const folders = useFavoritesStore((s) => s.folders);
@@ -27,8 +28,8 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
   }, [loadFolders]);
 
   const handleSave = async () => {
-    if (!folder) {
-      toast.error("Selecciona una carpeta");
+    if (!folder || folder.length === 0) {
+      notifyError("Selecciona una carpeta");
       return;
     }
 
@@ -40,17 +41,18 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
         {
           url: inputUrl,
           title: name || inputUrl,
-          folder: folder,
+          folder: folder.join("/"),
         },
         repo
       );
 
       await loadAllFavorites();
       await loadFolders();
-      toast.success("Favorito guardado");
+      notifySuccess("Favorito guardado");
       onSave();
-    } catch (e) {
-      toast.error("Error al guardar el favorito");
+    } catch (e: any) {
+      const msg = e instanceof Error ? e.message : String(e);
+      notifyError(msg || "Error al guardar el favorito");
     }
   };
 
@@ -106,16 +108,17 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
           <div className="flex items-center gap-2">
             <select
               id="favorite-folder"
-              value={folder}
-              onChange={(e) => setFolder(e.target.value)}
+              value={folder ? folder.join("/") : ""}
+              onChange={e => {
+                const val = e.target.value;
+                setFolder(val ? val.split("/") : null);
+              }}
               className="flex-1 px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-sm text-zinc-900 dark:text-white"
               aria-required="true"
             >
               <option value="">Selecciona una carpeta</option>
-              {folders.map((f) => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
+              {flattenFolderPaths(folders).map((pathArr) => (
+                <option key={pathArr.join("/")} value={pathArr.join("/")}>{pathArr.join(" / ")}</option>
               ))}
             </select>
             <button
@@ -144,8 +147,8 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
           open={showFolderModal}
           folders={folders}
           onClose={() => setShowFolderModal(false)}
-          onSelect={(newFolder: string) => {
-            setFolder(newFolder);
+          onSelect={(newFolderPath: string[]) => {
+            setFolder(newFolderPath);
             setShowFolderModal(false);
           }}
         />

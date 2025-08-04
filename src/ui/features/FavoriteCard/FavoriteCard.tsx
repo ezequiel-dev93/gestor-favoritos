@@ -1,7 +1,7 @@
 import { FiEdit3, FiTrash } from "react-icons/fi";
 import { useState } from "react";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/core/utils/notify";
 
 interface Favorite {
   id: string;
@@ -22,26 +22,31 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
 
   const handleEdit = () => {
     if (newTitle.trim() === "") {
-      toast.error("El título no puede estar vacío");
+      notifyError("El título no puede estar vacío");
       return;
     }
 
     if (newTitle !== favorite.title) {
       updateFavoriteTitle(favorite.id, newTitle);
-      toast.success("Título actualizado");
+      notifySuccess("Título actualizado");
     }
 
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
-    deleteFavorite(favorite.id);
-    toast.success("Favorito eliminado");
+  const handleDelete = async () => {
+    try {
+      await deleteFavorite(favorite.id);
+      notifySuccess("Favorito eliminado");
+    } catch (error) {
+      notifyError("No se pudo eliminar el favorito");
+      console.error(error);
+    }
   };
 
   return (
     <article
-      className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
+      className="bg-white dark:bg-zinc-800 rounded-lg p-0.5 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
     >
       <img
         src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
@@ -77,43 +82,50 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
             </button>
           </div>
         ) : (
-          <a
-            href={favorite.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-sm text-white hover:underline flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
-            aria-label={`Abrir ${favorite.title}`}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") window.open(favorite.url, "_blank", "noopener,noreferrer");
-            }}
-            tabIndex={0}
-            role="link"
-          >
-            {favorite.title}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setIsEditing(true);
+          <div className="flex items-center justify-between">
+            <a
+              href={favorite.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-sm text-white hover:underline flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+              aria-label={`Abrir ${favorite.title}`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") window.open(favorite.url, "_blank", "noopener,noreferrer");
               }}
-              title="Editar título"
-              aria-label="Editar título"
+              tabIndex={0}
+              role="link"
+              //
             >
-              <FiEdit3 className="text-zinc-400 hover:text-blue-500" />
-            </button>
-          </a>
-        )}
+              {favorite.title}
+            </a>
+            
+            <div className="flex items-center gap-4">
+              <button
+                onClick={e => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+                title="Editar título"
+                aria-label="Editar título"
+                className="ml-2 cursor-pointer"
+              >
+                <FiEdit3 className="text-zinc-400 hover:text-blue-500" />
+              </button>
 
-        <div className="mt-2 flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
-          <span className="truncate">{new URL(favorite.url).hostname}</span>
-          <button
-            onClick={handleDelete}
-            className="hover:text-red-600"
-            title="Eliminar favorito"
-            aria-label="Eliminar favorito"
-          >
-            <FiTrash />
-          </button>
-        </div>
+              <button
+                onClick={e => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
+                className="hover:text-red-600 cursor-pointer"
+                title="Eliminar favorito"
+                aria-label="Eliminar favorito"
+              >
+                <FiTrash />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </article>
   );

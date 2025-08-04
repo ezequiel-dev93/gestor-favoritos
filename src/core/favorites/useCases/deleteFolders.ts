@@ -1,8 +1,10 @@
 import type { FavoriteRepository } from "@/core/favorites/repositories/FavoriteRepository";
 
-/* Elimina todos los favoritos que pertenecen a una carpeta específica, es decir, que elimina la carpeta */
-export async function deleteFolder(folder: string, repo: FavoriteRepository): Promise<void> {
-  const favorites = await repo.getFavorites();
-  const updatedFavorites = favorites.filter(fav => fav.folder !== folder);
-  await repo.saveFavorites(updatedFavorites);
+// Elimina una carpeta y todas sus subcarpetas y favoritos asociados
+export async function deleteFolder(folderPath: string[], repo: FavoriteRepository): Promise<void> {
+  if (typeof repo.deleteFolder === "function") {
+    await repo.deleteFolder(folderPath);
+  } else {
+    throw new Error("El repositorio no soporta carpetas anidadas");
+  }
 }

@@ -1,5 +1,8 @@
 import type { Favorite } from "@/core/favorites/entities/Favorite";
 import type { FavoriteRepository } from "@/core/favorites/repositories/FavoriteRepository";
+// import type { FolderNode } from "@/core/favorites/entities/FolderNode";
+import { removeFolderNode, flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
+import type { FolderNode } from "@/core/favorites/entities/FolderNode";
 
 /* Implementación del repositorio utilizando Chrome Storage API */
 export class ChromeStorageRepository implements FavoriteRepository {
@@ -16,7 +19,7 @@ export class ChromeStorageRepository implements FavoriteRepository {
     }
   }
 
-  async getFolders(): Promise<string[]> {
+  async getFolders(): Promise<FolderNode[]> {
     try {
       const result = await chrome.storage.sync.get(this.FOLDERS_KEY);
       return result[this.FOLDERS_KEY] || [];
@@ -26,7 +29,7 @@ export class ChromeStorageRepository implements FavoriteRepository {
     }
   }
 
-  async saveFolders(folders: string[]): Promise<void> {
+  async saveFolders(folders: FolderNode[]): Promise<void> {
     try {
       await chrome.storage.sync.set({ [this.FOLDERS_KEY]: folders });
     } catch (error) {
@@ -91,15 +94,20 @@ export class ChromeStorageRepository implements FavoriteRepository {
     }
   }
 
-  async deleteFolder(folderName: string): Promise<void> {
+  async deleteFolder(folderPath: string[]): Promise<void> {
     try {
+      // Eliminar favoritos de la carpeta y subcarpetas
       const data = await chrome.storage.sync.get(this.STORAGE_KEY);
       const favorites: Favorite[] = data[this.STORAGE_KEY] || [];
-      const filtered = favorites.filter(fav => fav.folder !== folderName);
+      // Obtener todas las rutas a eliminar (carpeta y subcarpetas)
+      const foldersTree = await this.getFolders();
+      const allPaths = flattenFolderPaths(foldersTree);
+      const toDelete = allPaths.filter(pathArr => pathArr.length >= folderPath.length && pathArr.slice(0, folderPath.length).join("/") === folderPath.join("/"));
+      const toDeleteSet = new Set(toDelete.map(pathArr => pathArr.join("/")));
+      const filtered = favorites.filter(fav => !toDeleteSet.has(fav.folder));
       await chrome.storage.sync.set({ [this.STORAGE_KEY]: filtered });
-      // Elimina la carpeta de la lista de carpetas
-      const folders = await this.getFolders();
-      const updatedFolders = folders.filter(f => f !== folderName);
+      // Eliminar la carpeta y subcarpetas del árbol
+      const updatedFolders = removeFolderNode(foldersTree, folderPath);
       await this.saveFolders(updatedFolders);
     } catch (error) {
       console.error("Error al eliminar carpeta:", error);
