@@ -28,7 +28,7 @@ export function SearchInput() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex p-2 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          className="flex p-2 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
         >
           <Search className="text-zinc-500 dark:text-zinc-400" size={20} />
         </button>

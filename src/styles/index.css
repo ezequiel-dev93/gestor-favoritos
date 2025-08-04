@@ -1,9 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --app-bg: #0f0f0f;
+  --app-bg: #1A1A1A;
   --app-text: #ffffff;
   color-scheme: light dark;
 }
@@ -20,11 +18,12 @@ body {
   font-family: 'Onest Variable', sans-serif;
   color: var(--app-text);
   font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   text-decoration: inherit;
-  color: inherit;
 }
 
 @media (prefers-color-scheme: light) {

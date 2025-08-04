@@ -5,7 +5,7 @@ export function Footer() {
         href="https://ezequielsuarez-dev.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="dark:hover:text-zinc-300 transition-colors duration-200"
+        className="text-gray-400 hover:text-purple-500 underline font-medium transition-colors duration-200"
       >
         | Portfolio
       </a></p>

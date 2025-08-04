@@ -20,7 +20,7 @@ export function HoverFavoritesPreview({ folder }: Props) {
   }, [folder, selectedFolder]);;
 
   return (
-    <article className="absolute left-[120px] top-0 z-50 w-[300px] bg-white dark:bg-zinc-800 rounded-lg shadow-xl p-4 space-y-2">
+    <section className="absolute left-[120px] top-0 z-50 w-[300px] bg-white dark:bg-zinc-800 rounded-lg shadow-xl p-4 space-y-2">
       <h4 className="text-sm font-semibold text-zinc-600 dark:text-zinc-300">
         Favoritos de {folder}
       </h4>
@@ -37,12 +37,15 @@ export function HoverFavoritesPreview({ folder }: Props) {
             <img
               src={`chrome://favicon/${fav.url}`}
               alt=""
-              className="w-4 h-4"
+              className="size-4"
             />
             <span className="truncate">{fav.title}</span>
           </li>
         ))}
       </ul>
-    </article>
+    </section>
   );
 }
+
+
+

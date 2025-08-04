@@ -13,6 +13,7 @@ interface FavoritesState {
   favorites: Favorite[];
   folders: string[];
   selectedFolder: string | null;
+  isLoading: boolean;
 
   setSelectedFolder: (folder: string | null) => void;
   loadAllFavorites: () => Promise<void>;
@@ -22,28 +23,41 @@ interface FavoritesState {
   deleteFavorite: (id: string) => Promise<void>;
   updateFavoriteTitle: (id: string, newTitle: string) => Promise<void>;
   setFavorites: (favorites: Favorite[]) => void;
+  addFolder: (folderName: string) => Promise<void>;
   saveFavoritesOrder: (newOrder: Favorite[]) => Promise<void>;
 }
+
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   favorites: [],
   folders: [],
   selectedFolder: null,
+  isLoading: false,
 
   setSelectedFolder: (folder) => set({ selectedFolder: folder }),
 
   loadAllFavorites: async () => {
-    const repo = new ChromeStorageRepository();
-    const data = await getAllFavorites(repo);
-    set({ favorites: data });
+    set({ isLoading: true });
+    try {
+      const repo = new ChromeStorageRepository();
+      const data = await getAllFavorites(repo);
+      set({ favorites: data });
+    } finally {
+      set({ isLoading: false });
+    }
   },
 
   loadFavoritesByFolder: async () => {
-    const repo = new ChromeStorageRepository();
-    const folder = get().selectedFolder;
-    if (!folder) return;
-    const data = await getFavoritesByFolder(folder, repo);
-    set({ favorites: data });
+    set({ isLoading: true });
+    try {
+      const repo = new ChromeStorageRepository();
+      const folder = get().selectedFolder;
+      if (!folder) return;
+      const data = await getFavoritesByFolder(folder, repo);
+      set({ favorites: data });
+    } finally {
+      set({ isLoading: false });
+    }
   },
 
   loadFolders: async () => {
@@ -85,7 +99,26 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   },
 
   setFavorites: (favorites) => set({ favorites }),
-  
+
+  addFolder: async (folderName: string) => {
+    const repo = new ChromeStorageRepository();
+    // Obtener carpetas actuales
+    let folders: string[] = [];
+    if (typeof repo.getFolders === 'function') {
+      folders = await repo.getFolders();
+    } else {
+      const allFavorites = await repo.getFavorites();
+      folders = Array.from(new Set(allFavorites.map(fav => fav.folder).filter(Boolean)));
+    }
+    if (!folders.includes(folderName)) {
+      folders.push(folderName);
+      if (typeof repo.saveFolders === 'function') {
+        await repo.saveFolders(folders);
+      }
+    }
+    await get().loadFolders();
+  },
+
   saveFavoritesOrder: async (newOrder) => {
     const repo = new ChromeStorageRepository();
     await repo.saveFavorites(newOrder);

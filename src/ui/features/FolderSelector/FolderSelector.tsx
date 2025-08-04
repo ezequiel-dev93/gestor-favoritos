@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { FolderItem } from "@/ui/features/FolderSelector/FolderItem";
-import { useFolderContext } from "@/ui/features/FolderContext/useFolderContext";
+import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
+
 
 export function FolderSelector() {
-  const { folders, removeFolder } = useFolderContext();
+  const folders = useFavoritesStore(s => s.folders);
+  const deleteFolder = useFavoritesStore(s => s.deleteFolder);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
 
   return (
     <section className="flex flex-col gap-2">
       {folders.map((folder) => (
         <FolderItem
-          key={folder.id}
-          folder={folder.nombre}
+          key={folder}
+          folder={folder}
           selectedFolder={selectedFolder}
-          handleSelect={() => setSelectedFolder(folder.nombre)}
-          handleDelete={() => removeFolder(folder.id)}
+          handleSelect={() => setSelectedFolder(folder)}
+          handleDelete={() => deleteFolder(folder)}
         />
       ))}
     </section>

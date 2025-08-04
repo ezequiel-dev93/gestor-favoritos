@@ -1,4 +1,4 @@
-import { AsidePanel } from "@/ui/components/AsidePanel";
+import  AsidePanel  from "@/ui/components/AsidePanel";
 
 export function AppLayout() {
   return (
