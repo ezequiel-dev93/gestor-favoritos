@@ -3,7 +3,6 @@ import type { FavoriteRepository } from "@/core/favorites/repositories/FavoriteR
 import { generateId } from "@/core/utils/generateId";
 import { existsFavoriteByUrl } from "@/core/favorites/useCases/existsFavoriteByUrl";
 
-/* Añade un nuevo favorito si no existe ya uno con la misma URL */
 export async function addFavorite(
   data: Omit<Favorite, "id">,
   folderPath: string[],

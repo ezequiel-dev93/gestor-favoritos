@@ -3,29 +3,43 @@ import { createPortal } from "react-dom";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { FolderExplorerModal } from "@/ui/features/FolderExplorerModal/FolderExplorerModal.tsx";
 import { flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
+import { notifySuccess, notifyError } from "@/core/utils/notify";
 
 interface AddFolderModalProps {
   isOpen: boolean;
   onClose: () => void;
-   children?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
   const [folderName, setFolderName] = useState("");
   const [selectedParentPath, setSelectedParentPath] = useState<string[] | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const folders = useFavoritesStore((state) => state.folders);
   const addFolder = useFavoritesStore((state) => state.addFolder);
 
   const handleCreateFolder = async () => {
     const name = folderName.trim();
-    if (name === "") return;
-    const path = selectedParentPath ? [...selectedParentPath, name] : [name];
-    await addFolder(path);
-    onClose();
-    setFolderName("");
-    setSelectedParentPath(null);
+    if (name === "") {
+      notifyError("Por favor, ingresa un nombre para la carpeta");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const path = selectedParentPath ? [...selectedParentPath, name] : [name];
+      await addFolder(path);
+      notifySuccess("Carpeta creada correctamente");
+      onClose();
+      setFolderName("");
+      setSelectedParentPath(null);
+    } catch (error) {
+      notifyError(error instanceof Error ? error.message : "Error al crear carpeta");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleExplorerSelect = (folderPath: string[] | null) => {
@@ -73,6 +87,7 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
                 className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-transparent text-zinc-900 dark:text-white"
                 required
                 aria-required="true"
+                disabled={isLoading}
               />
             </div>
 
@@ -93,6 +108,7 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
                 }}
                 className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-transparent text-zinc-900 dark:text-white"
                 aria-label="Seleccionar carpeta contenedora"
+                disabled={isLoading}
               >
                 <option value="">Raíz (sin carpeta)</option>
                 {flattenFolderPaths(folders).map((pathArr) => (
@@ -109,16 +125,18 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
               onClick={onClose}
               className="px-4 py-2 text-sm bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-white rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-600 cursor-pointer"
               aria-label="Cancelar creación de carpeta"
+              disabled={isLoading}
             >
               Cancelar
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-purple-600 cursor-pointer"
-              aria-label="Crear nueva carpeta"
+              disabled={isLoading}
+              className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-purple-600 cursor-pointer disabled:opacity-50"
+              aria-label={isLoading ? "Creando carpeta..." : "Crear nueva carpeta"}
             >
-              Crear Carpeta
+              {isLoading ? "Creando..." : "Crear Carpeta"}
             </button>
           </article>
         </form>
