@@ -6,6 +6,7 @@ import { existsFavoriteByUrl } from "@/core/favorites/useCases/existsFavoriteByU
 /* Añade un nuevo favorito si no existe ya uno con la misma URL */
 export async function addFavorite(
   data: Omit<Favorite, "id">,
+  folderPath: string[],
   repo: FavoriteRepository,
   force = false
 ): Promise<Favorite> {
@@ -17,6 +18,7 @@ export async function addFavorite(
   const newFavorite: Favorite = {
     ...data,
     id: generateId(),
+    folder: folderPath.join('/'),
   };
 
   const all = await repo.getFavorites();

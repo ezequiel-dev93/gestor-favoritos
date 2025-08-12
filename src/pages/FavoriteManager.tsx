@@ -2,7 +2,11 @@ import { FavoriteDndContext } from "@/ui/features/FavoriteDndContext/FavoriteDnd
 import { FavoriteList } from "@/ui/features/FavoritesList/FavoritesList";
 import { motion } from "framer-motion";
 
-export function FavoriteManager() {
+interface FavoriteManagerProps {
+  folderPath?: string[];
+}
+
+export function FavoriteManager({ folderPath }: FavoriteManagerProps) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 15 }}
@@ -11,7 +15,7 @@ export function FavoriteManager() {
       transition={{ duration: 0.4, ease: "easeInOut" }}
     >
       <FavoriteDndContext>
-        <FavoriteList />
+        <FavoriteList folderPath={folderPath} /> 
       </FavoriteDndContext>
     </motion.section>
   );

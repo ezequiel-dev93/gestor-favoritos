@@ -7,34 +7,24 @@ import { FloatingOpenButton } from '@/ui/components/FloatingOpenButton';
 import { Header } from '@/ui/components/Header';
 import { Footer } from '@/ui/components/Footer';
 import { SearchInput } from '@/ui/components/Search';
-import FolderList from '@/ui/features/FolderList/FolderList';
 import { AddFavoriteModal } from '@/ui/features/AddFavoriteModal/AddFavoriteModal';
+import  AddFolderModal  from '@/ui/features/AddFolderModal/AddFolderModal';
+import  DroppableFolderNode  from '@/ui/features/DroppableFolderNode/DroppableFolderNode'
 import { useFavoritesStore } from '@/ui/hooks/useFavoritesStore';
-
 
 export default function AsidePanel() {
   const [open, setOpen] = useState(true);
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
   const [showAddFolder, setShowAddFolder] = useState(false);
   const [showAddFavorite, setShowAddFavorite] = useState(false);
   const panelRef = useRef(null);
 
-  const folders = useFavoritesStore(s => s.folders);
-  const setSelectedFolder = useFavoritesStore(s => s.setSelectedFolder);
-  const deleteFolder = useFavoritesStore(s => s.deleteFolder);
-  const loadFolders = useFavoritesStore(s => s.loadFolders);
-  const loadFavoritesByFolder = useFavoritesStore(s => s.loadFavoritesByFolder);
-  const loadAllFavorites = useFavoritesStore(s => s.loadAllFavorites);
-  const selectedFolder = useFavoritesStore(s => s.selectedFolder);
+  const folders = useFavoritesStore(state => state.folders);
+  const selectedFolder = useFavoritesStore(state => state.selectedFolder);
+  const setSelectedFolder = useFavoritesStore(state => state.setSelectedFolder);
+  const deleteFolder = useFavoritesStore(state => state.deleteFolder);
+  const loadFolders = useFavoritesStore(state => state.loadFolders);
+  const loadFavoritesByFolder = useFavoritesStore(state => state.loadFavoritesByFolder);
+  const loadAllFavorites = useFavoritesStore(state => state.loadAllFavorites);
 
   useEffect(() => {
     loadFolders();
@@ -67,7 +57,7 @@ export default function AsidePanel() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '-100%', opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-            className="bg-zinc-100 dark:bg-zinc-800 h-screen w-full max-w-[460px] shadow-lg relative overflow-hidden"
+            className="bg-zinc-100 dark:bg-zinc-800 h-screen w-full max-w-[460px] shadow-lg relative overflow-x-auto overflow-y-auto whitespace-nowrap"
             onClick={e => e.stopPropagation()}
           >
             <IconButton
@@ -79,12 +69,13 @@ export default function AsidePanel() {
                 <Header />
               </section>
 
-              <section className='flex flex-col gap-4 px-4'>
+              <section className="flex flex-col gap-4 px-4">
                 <SearchInput />
+
                 <div>
                   <button
                     onClick={() => setShowAddFolder(true)}
-                    className="px-2 py-1 text-xs bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-center me-2 mb-2 cursor-pointer" 
+                    className="px-2 py-1 text-xs bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-center me-2 mb-2 cursor-pointer"
                   >
                     + Nueva Carpeta
                   </button>
@@ -108,15 +99,19 @@ export default function AsidePanel() {
               </section>
 
               <section className="flex-1 overflow-y-auto px-4 py-2 flex flex-col gap-8">
-                <FolderList
-                  folders={folders}
+                <DroppableFolderNode
+                  nodes={folders}
                   selectedFolder={selectedFolder}
                   setSelectedFolder={setSelectedFolder}
                   deleteFolder={deleteFolder}
-                  showAddFolder={showAddFolder}
-                  setShowAddFolder={setShowAddFolder}
+                />
+
+                <AddFolderModal
+                  isOpen={showAddFolder}
+                  onClose={() => setShowAddFolder(false)}
                 />
               </section>
+
               <section className="p-2 border-t border-zinc-300 dark:border-zinc-700">
                 <Footer />
               </section>

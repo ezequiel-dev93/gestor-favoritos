@@ -1,6 +1,5 @@
 import type { Favorite } from "@/core/favorites/entities/Favorite";
 import type { FavoriteRepository } from "@/core/favorites/repositories/FavoriteRepository";
-// import type { FolderNode } from "@/core/favorites/entities/FolderNode";
 import { removeFolderNode, flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
 import type { FolderNode } from "@/core/favorites/entities/FolderNode";
 

@@ -7,6 +7,7 @@ import { flattenFolderPaths } from "@/core/favorites/entities/FolderNode";
 interface AddFolderModalProps {
   isOpen: boolean;
   onClose: () => void;
+   children?: React.ReactNode;
 }
 
 const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {

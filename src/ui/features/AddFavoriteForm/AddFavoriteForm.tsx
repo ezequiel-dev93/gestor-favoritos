@@ -105,6 +105,7 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
           <label htmlFor="favorite-folder" className="block mb-1 text-sm font-medium text-zinc-700 dark:text-zinc-200">
             Carpeta
           </label>
+
           <div className="flex items-center gap-2">
             <select
               id="favorite-folder"
@@ -121,10 +122,11 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
                 <option key={pathArr.join("/")} value={pathArr.join("/")}>{pathArr.join(" / ")}</option>
               ))}
             </select>
+
             <button
               type="button"
               onClick={() => setShowFolderModal(true)}
-              className="text-sm px-3 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+              className="text-sm px-3 py-2 rounded-md bg-gradient-to-r from-cyan-600 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium text-center cursor-pointer"
             >
               Crear carpeta
             </button>
@@ -134,7 +136,7 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({ url, initialFolder, o
         <div className="flex justify-end">
           <button
             type="submit"
-            className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 font-medium rounded-full text-sm px-4 py-1 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 font-medium rounded-full text-sm px-4 py-1 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 cursor-pointer"
             aria-label="Guardar favorito"
           >
             Guardar

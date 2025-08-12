@@ -1,5 +1,6 @@
-import { FiEdit3, FiTrash } from "react-icons/fi";
 import { useState } from "react";
+import { FiEdit3 } from "react-icons/fi";
+import { TfiTrash } from "react-icons/tfi";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { notifySuccess, notifyError } from "@/core/utils/notify";
 
@@ -43,21 +44,23 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
       console.error(error);
     }
   };
-
+ 
   return (
-    <article
+    <section
       className="bg-white dark:bg-zinc-800 rounded-lg p-0.5 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
     >
-      <img
-        src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
-        alt="favicon"
-        className="w-6 h-6 rounded"
-        style={{ minWidth: 24, minHeight: 24 }}
-      />
+      <picture>
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
+            alt="favicon"
+            className="size-6 rounded"
+            style={{ minWidth: 24, minHeight: 24 }}
+          />
+      </picture>
 
-      <div className="flex-1">
+      <section className="flex-1">
         {isEditing ? (
-          <div className="flex items-center gap-2">
+          <article className="flex items-center gap-2">
             <input
               type="text"
               className="w-full rounded border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -80,9 +83,9 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
             >
               Guardar
             </button>
-          </div>
+          </article>
         ) : (
-          <div className="flex items-center justify-between">
+          <article className="flex items-center justify-between">
             <a
               href={favorite.url}
               target="_blank"
@@ -94,7 +97,6 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
               }}
               tabIndex={0}
               role="link"
-              //
             >
               {favorite.title}
             </a>
@@ -121,12 +123,12 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
                 title="Eliminar favorito"
                 aria-label="Eliminar favorito"
               >
-                <FiTrash />
+                <TfiTrash />
               </button>
             </div>
-          </div>
+          </article>
         )}
-      </div>
-    </article>
+      </section>
+    </section>
   );
 }

@@ -34,7 +34,7 @@ export const AddFavoriteModal: React.FC<AddFavoriteModalProps> = ({
         <div className="flex flex-col gap-4">
           <button
             onClick={() => setFolderExplorerOpen(true)}
-            className="text-sm text-blue-600 hover:underline self-end"
+            className="text-sm px-2.5 py-0.5 self-end bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-center me-2 mb-2 cursor-pointer"
           >
             Seleccionar carpeta
           </button>
