@@ -54,12 +54,19 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     try {
       const repo = new ChromeStorageRepository();
       const folderPath = get().selectedFolder;
-      if (!folderPath) return;
+      if (!folderPath) {
+        set({ favorites: [] });
+        return;
+      }
+      
       const data = await getFavoritesByFolder(folderPath, repo);
       set({ favorites: data });
+    } catch (error) {
+      console.error("Error loading favorites by folder:", error);
+      set({ favorites: [] });
     } finally {
       set({ isLoading: false });
-    }
+    }       
   },
 
   loadFolders: async () => {
@@ -103,12 +110,18 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   setFavorites: (favorites) => set({ favorites }),
 
   addFolder: async (folderPath: string[]) => {
-    const repo = new ChromeStorageRepository();
-    let folders = await repo.getFolders();
-    folders = addFolderNode(folders, folderPath);
-    await repo.saveFolders(folders);
-    await get().loadFolders();
+    try {
+      const repo = new ChromeStorageRepository();
+      let folders = await repo.getFolders();
+      folders = addFolderNode(folders, folderPath);
+      await repo.saveFolders(folders);
+      set({ folders, selectedFolder: folderPath });
+    } catch (error) {
+      console.error('Error al crear carpeta:', error);
+      throw new Error(error instanceof Error ? error.message : 'Error desconocido al crear carpeta');
+    }
   },
+
 
   saveFavoritesOrder: async (newOrder) => {
     const repo = new ChromeStorageRepository();

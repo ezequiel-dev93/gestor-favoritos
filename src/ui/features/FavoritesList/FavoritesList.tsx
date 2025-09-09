@@ -1,10 +1,11 @@
-import { useSortable } from "@dnd-kit/sortable";
+import { useEffect } from 'react';
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { FavoriteCard } from "@/ui/features/FavoriteCard/FavoriteCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Favorite } from "@/core/favorites/entities/Favorite";
+import { useSortable } from "@dnd-kit/sortable";
 
 function DraggableFavorite({ favorite }: { favorite: Favorite }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: favorite.id });
@@ -21,9 +22,8 @@ function DraggableFavorite({ favorite }: { favorite: Favorite }) {
       style={style}
       layout
       {...attributes}
-      {...listeners}
     >
-      <FavoriteCard favorite={favorite} />
+      <FavoriteCard favorite={favorite} dragHandleProps={listeners} />
     </motion.li>
   );
 }
@@ -33,15 +33,24 @@ interface FavoriteListProps {
 }
 
 export function FavoriteList({ folderPath }: FavoriteListProps) {
-  const { favorites: allFavorites, isLoading, folders, selectedFolder } = useFavoritesStore();
+  const { 
+    favorites: allFavorites, 
+    isLoading, 
+    folders,
+    loadFavoritesByFolder,
+  } = useFavoritesStore();
   
   const favorites = folderPath 
     ? allFavorites.filter(fav => fav.folder === folderPath.join('/'))
-    : selectedFolder 
-      ? allFavorites.filter(fav => fav.folder === selectedFolder.join('/'))
-      : [];
+    : [];
 
   const showEmptyMsg = !isLoading && favorites.length === 0 && folders.length > 0 && folderPath;
+
+  useEffect(() => {
+    if (folderPath) {
+      loadFavoritesByFolder();
+    }
+  }, [folderPath, loadFavoritesByFolder]);
 
   return (
     <section className="px-4" aria-labelledby="favorites-heading">
@@ -54,8 +63,8 @@ export function FavoriteList({ folderPath }: FavoriteListProps) {
       )}
       
       {showEmptyMsg && (
-        <p className="text-zinc-500 italic dark:text-zinc-400" role="note">
-          No hay favoritos en esta carpeta
+        <p className="text-zinc-500 dark:text-zinc-400" role="note">
+          Vacio
         </p>
       )}
       

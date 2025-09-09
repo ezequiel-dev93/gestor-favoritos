@@ -26,7 +26,7 @@ export function removeFolderNode(
   const [head, ...rest] = path;
   return root
     .map((node) => {
-      if (node.name !== head) return node;
+      if (node.name !== head) return node;     
       if (rest.length === 0) return null; // Eliminar este nodo
       return {
         ...node,

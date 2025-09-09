@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AddFavoriteForm from "@/ui/features/AddFavoriteForm/AddFavoriteForm";
 import { Modal } from "@/ui/components/Modal";
-import { FolderExplorerModal } from "@/ui/features/FolderExplorerModal/FolderExplorerModal";
+import FolderExplorerModal from "@/ui/features/FolderExplorerModal/FolderExplorerModal";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 
 interface AddFavoriteModalProps {

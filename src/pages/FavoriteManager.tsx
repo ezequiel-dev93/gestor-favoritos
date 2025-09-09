@@ -7,6 +7,7 @@ interface FavoriteManagerProps {
 }
 
 export function FavoriteManager({ folderPath }: FavoriteManagerProps) {
+   
   return (
     <motion.section
       initial={{ opacity: 0, y: 15 }}

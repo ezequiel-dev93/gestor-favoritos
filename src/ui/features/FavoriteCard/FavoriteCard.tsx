@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiEdit3 } from "react-icons/fi";
+import { FiEdit3, FiMove } from "react-icons/fi";
 import { TfiTrash } from "react-icons/tfi";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { notifySuccess, notifyError } from "@/core/utils/notify";
@@ -13,9 +13,10 @@ interface Favorite {
 
 interface FavoriteCardProps {
   favorite: Favorite;
+  dragHandleProps?: any;
 }
 
-export function FavoriteCard({ favorite }: FavoriteCardProps) {
+export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(favorite.title);
   const updateFavoriteTitle = useFavoritesStore(s => s.updateFavoriteTitle);
@@ -49,13 +50,22 @@ export function FavoriteCard({ favorite }: FavoriteCardProps) {
     <section
       className="bg-white dark:bg-zinc-800 rounded-lg p-0.5 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
     >
+      {/* Handle específico para drag and drop */}
+      <button
+        {...dragHandleProps}
+        className="cursor-grab active:cursor-grabbing p-1 text-zinc-400 hover:text-zinc-600"
+        aria-label="Arrastrar favorito"
+      >
+        <FiMove />
+      </button>
+      
       <picture>
-          <img
-            src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
-            alt="favicon"
-            className="size-6 rounded"
-            style={{ minWidth: 24, minHeight: 24 }}
-          />
+        <img
+          src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
+          alt="favicon"
+          className="size-6 rounded"
+          style={{ minWidth: 24, minHeight: 24 }}
+        />
       </picture>
 
       <section className="flex-1">
