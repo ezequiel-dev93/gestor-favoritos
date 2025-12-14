@@ -13,8 +13,10 @@ import { deleteFavorite as deleteFavoriteUseCase } from "@/core/favorites/useCas
 interface FavoritesState {
   favorites: Favorite[];
   folders: FolderNode[];
-  selectedFolder: string[] | null; // ruta
+  selectedFolder: string[] | null;
   isLoading: boolean;
+  isSearching: boolean; // NUEVO: indica si hay una búsqueda activa
+  searchQuery: string;   // NUEVO: almacena la consulta actual
 
   setSelectedFolder: (folder: string[] | null) => void;
   loadAllFavorites: () => Promise<void>;
@@ -29,12 +31,13 @@ interface FavoritesState {
   searchFavorites: (query: string) => Promise<void>;
 }
 
-
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   favorites: [],
   folders: [],
   selectedFolder: null,
   isLoading: false,
+  isSearching: false,  
+  searchQuery: "", 
 
   setSelectedFolder: (folder) => set({ selectedFolder: folder }),
 
@@ -107,7 +110,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     }));
   },
 
-  setFavorites: (favorites) => set({ favorites }),
+  setFavorites: (favorites) => set({ favorites }),  
 
   addFolder: async (folderPath: string[]) => {
     try {
@@ -122,7 +125,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     }
   },
 
-
   saveFavoritesOrder: async (newOrder) => {
     const repo = new ChromeStorageRepository();
     await repo.saveFavorites(newOrder);
@@ -130,18 +132,17 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
   searchFavorites: async (query: string) => {
     if (!query || query.trim() === "") {
+      set({ isSearching: false, searchQuery: "" });
       await get().loadAllFavorites();
       return;
     }
-    set({ isLoading: true });
+    set({ isLoading: true, isSearching: true, searchQuery: query });
     try {
       const repo = new ChromeStorageRepository();
-      // Import dinámico para evitar ciclo si es necesario
       const { searchFavorites } = await import("@/core/favorites/useCases/searchFavorites");
       const results = await searchFavorites(query, repo);
       set({ favorites: results });
     } catch (error) {
-      // Notificación opcional si tienes notifyError
       if (typeof window !== 'undefined' && window.console) {
         console.error("Error en búsqueda de favoritos:", error);
       }

@@ -91,6 +91,7 @@ export default function AsidePanel({
                 aria-hidden="true"
               />
             )}
+            
             <FocusTrap
                active={open && !showAddFolder && !showAddFavorite}
                focusTrapOptions={{

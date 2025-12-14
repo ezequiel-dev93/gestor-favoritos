@@ -38,13 +38,17 @@ export function FavoriteList({ folderPath }: FavoriteListProps) {
     isLoading, 
     folders,
     loadFavoritesByFolder,
+    isSearching,  // NUEVO: obtener estado de búsqueda
   } = useFavoritesStore();
   
-  const favorites = folderPath 
-    ? allFavorites.filter(fav => fav.folder === folderPath.join('/'))
-    : [];
+  // NUEVO: lógica de filtrado que respeta las búsquedas
+  const favorites = isSearching 
+    ? allFavorites  // Si hay búsqueda activa, mostrar todos los resultados
+    : folderPath 
+      ? allFavorites.filter(fav => fav.folder === folderPath.join('/'))
+      : [];
 
-  const showEmptyMsg = !isLoading && favorites.length === 0 && folders.length > 0 && folderPath;
+  const showEmptyMsg = !isLoading && favorites.length === 0 && folders.length > 0 && folderPath && !isSearching;
 
   useEffect(() => {
     if (folderPath) {
