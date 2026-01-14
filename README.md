@@ -43,10 +43,10 @@ El gestor implementa un CRUD completo para favoritos y carpetas utilizando la cl
 
 ```bash
 # Instalar dependencias
-npm install
+pnpm install
 
 # Desarrollo con recarga automática
-npm run dev
+pnpm run dev
 
 # Build optimizado para producción
-npm run build
+pnpm run build
