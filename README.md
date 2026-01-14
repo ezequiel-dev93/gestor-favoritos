@@ -1,8 +1,12 @@
-# 🚀 Gestor de Favoritos 
+# Gestor de Favoritos – Chrome Extension
 
-Extensión de Chrome desarrollada con **Vite + React + TypeScript** que permite gestionar tus favoritos de manera visual, ordenada y totalmente personalizada.Pensada para mejorar la experiencia al navegar y organizar tus links importantes en carpetas con soporte **drag & drop**, persistencia entre dispositivos y un **sistema completo CRUD** utilizando la API de Chrome.
+Gestor de Favoritos es una extensión de Google Chrome diseñada para ayudarte a **organizar, guardar y gestionar enlaces de forma simple y eficiente**, directamente desde tu navegador.
 
-## 🧠 Características Principales
+El objetivo principal del proyecto es ofrecer una herramienta liviana, clara y orientada a productividad, evitando la complejidad innecesaria de los gestores tradicionales de favoritos.
+
+---
+
+## 🚀 🧠 Características Principales
 
 - 📁 Gestión de carpetas para organizar favoritos
 - ✍️ Renombrar favoritos al guardar o posteriormente
@@ -13,10 +17,12 @@ Extensión de Chrome desarrollada con **Vite + React + TypeScript** que permite 
 - 📦 Guardado en `chrome.storage.sync` para mantener datos entre dispositivos
 - 💾 Orden de favoritos y carpetas persistente
 - 📦 CRUD persistente con chrome.storage.sync
-- 🧪 Interfaz con animaciones sutiles (GSAP + Tailwind)
+- 🧪 Interfaz con animaciones sutiles (GSAP + Frame-Motion + Tailwind)
 - 💻 Responsive & diseño limpio
 
-## 🗄️ CRUD Persistente con Chrome Storage
+---
+
+🗄️ CRUD Persistente con Chrome Storage
 El gestor implementa un CRUD completo para favoritos y carpetas utilizando la clase ChromeStorageRepository en la capa de infraestructura. Esto permite:
 
 🔹 Crear: Agregar nuevos favoritos y carpetas, persistiendo los datos en chrome.storage.sync.
@@ -27,26 +33,112 @@ El gestor implementa un CRUD completo para favoritos y carpetas utilizando la cl
 
 ❌ Eliminar: Borrar favoritos individuales, eliminar todos los favoritos, o eliminar una carpeta (y todos los favoritos asociados a ella).
 
-## 🏗️ Tecnologías Utilizadas
+---
 
-- ⚛️ React + TypeScript
-- 🧰 Vite
-- 🎨 TailwindCSS
-- 🧠 Zustand para estado global
-- 📦 Chrome Storage API
-- 🧲 DnD Kit para drag and drop
-- 🌈 GSAP (TextPlugin y animaciones)
-- 🌈 Frame-Motion
-- 🍞 Sonner para notificaciones
 
-## 🧾 Instalacón
+## 🧠 Filosofía del proyecto
 
-```bash
-# Instalar dependencias
-pnpm install
+Esta extensión está pensada como un **producto en evolución**, priorizando:
 
-# Desarrollo con recarga automática
-pnpm run dev
+* Simplicidad y claridad de uso
+* Código mantenible y escalable
+* Uso responsable de datos (sin tracking invasivo)
+* Iteraciones pequeñas y mejoras continuas
 
-# Build optimizado para producción
-pnpm run build
+---
+
+## 🧩 Tecnologías utilizadas
+
+* 🧰 Vite
+* ⚛️ React + TypeScript
+* 🎨 TailwindCSS
+* 🧠 Zustand para estado global
+* 🧲 DnD Kit para drag and drop
+* 🌈 GSAP + Frame-Motion
+* 🍞 Sonner Notificación
+* 📦 Chrome Extensions API (Manifest V3)
+* 📦 Chrome Storage API
+
+---
+
+## 📦 Instalación (modo desarrollo)
+
+1. Clonar el repositorio:
+
+   ```bash
+   git clone https://github.com/ezequiel-dev93/gestor-favoritos.git
+   ```
+
+2. Abrir Google Chrome y navegar a:
+
+   ```
+   chrome://extensions
+   ```
+
+3. Activar **Developer mode** (modo desarrollador)
+
+4. Seleccionar **Load unpacked**
+
+5. Elegir la carpeta raíz del proyecto
+
+La extensión quedará cargada y lista para usar.
+
+---
+
+## 🛠️ Desarrollo y estructura del proyecto
+
+Estructura general del proyecto:
+
+* `manifest.json` – Configuración principal de la extensión
+* `popup.html` – Interfaz de usuario
+* `popup.js` – Lógica principal de la extensión
+* `styles.css` – Estilos
+* `icons/` – Íconos de la extensión
+
+El estado de los favoritos se gestiona mediante `chrome.storage`, garantizando persistencia y buen rendimiento.
+
+---
+
+## 🔐 Privacidad y datos
+
+Gestor de Favoritos:
+
+* **No recolecta datos personales**
+* **No envía información a servidores externos**
+* Utiliza únicamente almacenamiento local del navegador
+
+La privacidad del usuario es una prioridad del proyecto.
+
+---
+
+## 📈 Roadmap (próximas funcionalidades)
+
+* Exportación de favoritos (JSON / CSV)
+* Importación de favoritos
+* Mejoras en la organización (búsqueda y filtros)
+* Optimización de experiencia de usuario
+
+El roadmap puede evolucionar en función del feedback de los usuarios.
+
+---
+
+## 🐞 Reporte de errores y sugerencias
+
+Si encontrás un bug o tenés una idea para mejorar la extensión:
+
+* Abrí un issue en el repositorio
+* Describí el problema o sugerencia de la forma más clara posible
+
+Toda contribución o feedback es bienvenida.
+
+---
+
+## 📄 Licencia
+
+Este proyecto se distribuye bajo licencia MIT.
+
+---
+
+## 📌 Estado del proyecto
+
+El proyecto se encuentra en **desarrollo activo** y se actualiza de forma iterativa.
