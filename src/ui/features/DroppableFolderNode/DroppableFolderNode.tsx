@@ -2,6 +2,7 @@ import React from "react";
 import type { FolderNode } from "@/core/favorites/entities/FolderNode";
 import { FolderNodeItem } from "@/ui/features/DroppableFolderNode/FolderNodeItem";
 import { useDroppableFolderNode } from "@/ui/hooks/useDroppableFolderNode";
+import { FavoriteManager } from "@/pages/FavoriteManager";
 
 interface DroppableFolderNodeProps {
   nodes: FolderNode[];
@@ -66,7 +67,7 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
   return (
     <li className="list-none mb-4">
       <FolderNodeItem {...folderProps} />
-      
+
       {folderProps.isOpen && folderProps.hasChildren && (
         <ul>
           <DroppableFolderNode
@@ -79,6 +80,14 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
           />
         </ul>
       )}
+
+      {selectedFolder &&
+        folderProps.currentPath.length === selectedFolder.length &&
+        folderProps.currentPath.every((val, index) => val === selectedFolder[index]) && (
+          <div className="pl-6">
+            <FavoriteManager folderPath={selectedFolder} />
+          </div>
+        )}
     </li>
   );
 };

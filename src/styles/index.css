@@ -6,8 +6,10 @@
   color-scheme: light dark;
 }
 
-html, body, #root {
-  width: 475px;
+html,
+body,
+#root {
+  width: 560px;
   min-height: 100%;
   overflow-x: hidden;
   background: var(--app-bg);
@@ -28,7 +30,7 @@ a {
 
 @media (prefers-color-scheme: light) {
   :root {
-    --app-bg: #ffffff;  
-    --app-text: #26282a; 
+    --app-bg: #ffffff;
+    --app-text: #26282a;
   }
 }

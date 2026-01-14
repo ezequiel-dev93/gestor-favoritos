@@ -1,7 +1,6 @@
 import type { Favorite } from "@/core/favorites/entities/Favorite";
 import type { FavoriteRepository } from "@/core/favorites/repositories/FavoriteRepository";
 
-/* Busca favoritos que coincidan con una consulta */
 export async function searchFavorites(
   query: string,
   repo: FavoriteRepository

@@ -14,6 +14,7 @@ import { useFavoritesStore } from '@/ui/hooks/useFavoritesStore';
 import { Footer } from '@/ui/components/Footer';
 import { FavoriteManager } from '@/pages/FavoriteManager';
 
+
 interface AsidePanelProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -24,6 +25,7 @@ export default function AsidePanel({
   onOpenChange,
 }: AsidePanelProps) {
   const folders = useFavoritesStore((state) => state.folders);
+  const isSearching = useFavoritesStore((state) => state.isSearching);
   const selectedFolder = useFavoritesStore((state) => state.selectedFolder);
   const setSelectedFolder = useFavoritesStore((state) => state.setSelectedFolder);
   const deleteFolder = useFavoritesStore((state) => state.deleteFolder);
@@ -91,10 +93,10 @@ export default function AsidePanel({
                 aria-hidden="true"
               />
             )}
-            
+
             <FocusTrap
-               active={open && !showAddFolder && !showAddFavorite}
-               focusTrapOptions={{
+              active={open && !showAddFolder && !showAddFavorite}
+              focusTrapOptions={{
                 initialFocus: () => asideRef.current as HTMLElement,
                 escapeDeactivates: false,
                 clickOutsideDeactivates: false,
@@ -105,7 +107,7 @@ export default function AsidePanel({
                 role="dialog"
                 aria-label="Panel de gestión de favoritos"
                 aria-modal="true"
-                className="fixed right-0 top-0 z-60 h-full w-full max-w-[480px] bg-white dark:bg-zinc-900 shadow-lg flex flex-col pl-4"
+                className="fixed right-0 top-0 z-60 h-full w-full max-w-[600px] bg-white dark:bg-zinc-900 shadow-lg flex flex-col pl-4"
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
@@ -128,53 +130,54 @@ export default function AsidePanel({
                 >
                   <SearchInput />
 
-                  <section className="flex flex-col items-start gap-8">
-                    <button
-                      onClick={() => setShowAddFavorite(true)}
-                      className="px-3 py-1.5 text-sm bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 text-white font-medium rounded-lg cursor-pointer"
-                      aria-label="Agregar un nuevo favorito"
-                    >
-                      + Agrega Tu Favorito
-                    </button>
+                  {isSearching ? (
+                    <section className="mt-4">
+                      <FavoriteManager />
+                    </section>
+                  ) : (
+                    <section className="flex flex-col items-start gap-8">
+                      <button
+                        onClick={() => setShowAddFavorite(true)}
+                        className="px-3 py-1.5 text-sm bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 text-white font-medium rounded-lg cursor-pointer"
+                        aria-label="Agregar un nuevo favorito"
+                      >
+                        + Agrega Tu Favorito
+                      </button>
 
-                    <AddFavoriteModal
-                      url={currentUrl}
-                      folder={selectedFolder}
-                      open={showAddFavorite}
-                      onClose={() => setShowAddFavorite(false)}
-                      onSave={() => setShowAddFavorite(false)}
-                    />
+                      <AddFavoriteModal
+                        url={currentUrl}
+                        folder={selectedFolder}
+                        open={showAddFavorite}
+                        onClose={() => setShowAddFavorite(false)}
+                        onSave={() => setShowAddFavorite(false)}
+                      />
 
-                    <button
-                      onClick={() => setShowAddFolder(true)}
-                      className="px-3 py-1.5 text-sm bg-gradient-to-r from-cyan-700 via-cyan-600 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 text-white font-medium rounded-lg cursor-pointer"
-                      aria-label="Crear nueva carpeta"
-                    >
-                      + Nueva Carpeta
-                    </button>
+                      <button
+                        onClick={() => setShowAddFolder(true)}
+                        className="px-3 py-1.5 text-sm bg-gradient-to-r from-cyan-700 via-cyan-600 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 text-white font-medium rounded-lg cursor-pointer"
+                        aria-label="Crear nueva carpeta"
+                      >
+                        + Nueva Carpeta
+                      </button>
 
-                    <AddFolderModal
-                      isOpen={showAddFolder}
-                      onClose={() => setShowAddFolder(false)}
-                    />
-                  </section>
+                      <AddFolderModal
+                        isOpen={showAddFolder}
+                        onClose={() => setShowAddFolder(false)}
+                      />
 
-                  <section className="py-4 border-t border-zinc-300 dark:border-zinc-800 mr-2">
-                    <DroppableFolderNode
-                      nodes={folders}
-                      selectedFolder={selectedFolder}
-                      setSelectedFolder={setSelectedFolder}
-                      deleteFolder={deleteFolder}
-                      level={0}
-                    />
-                  </section>
-                  
-                  {/* AGREGAR: Mostrar favoritos solo de la carpeta seleccionada */}
-                  {selectedFolder && (
-                    <section className="border-t border-zinc-300 dark:border-zinc-800">
-                      <FavoriteManager folderPath={selectedFolder} />
+                      <section className="py-4 border-t border-zinc-300 dark:border-zinc-800 mr-2 w-full">
+                        <DroppableFolderNode
+                          nodes={folders}
+                          selectedFolder={selectedFolder}
+                          setSelectedFolder={setSelectedFolder}
+                          deleteFolder={deleteFolder}
+                          level={0}
+                        />
+                      </section>
                     </section>
                   )}
+
+
                 </section>
 
                 <section className="border-t border-zinc-300 dark:border-zinc-800 p-4">

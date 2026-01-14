@@ -15,8 +15,8 @@ function DraggableFavorite({ favorite }: { favorite: Favorite }) {
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 10 : undefined,
   };
-  
-  return ( 
+
+  return (
     <motion.li
       ref={setNodeRef}
       style={style}
@@ -33,18 +33,17 @@ interface FavoriteListProps {
 }
 
 export function FavoriteList({ folderPath }: FavoriteListProps) {
-  const { 
-    favorites: allFavorites, 
-    isLoading, 
+  const {
+    favorites: allFavorites,
+    isLoading,
     folders,
     loadFavoritesByFolder,
-    isSearching,  // NUEVO: obtener estado de búsqueda
+    isSearching,
   } = useFavoritesStore();
-  
-  // NUEVO: lógica de filtrado que respeta las búsquedas
-  const favorites = isSearching 
-    ? allFavorites  // Si hay búsqueda activa, mostrar todos los resultados
-    : folderPath 
+
+  const favorites = isSearching
+    ? allFavorites
+    : folderPath
       ? allFavorites.filter(fav => fav.folder === folderPath.join('/'))
       : [];
 
@@ -59,19 +58,19 @@ export function FavoriteList({ folderPath }: FavoriteListProps) {
   return (
     <section className="px-4" aria-labelledby="favorites-heading">
       <h2 id="favorites-heading" className="sr-only">Lista de favoritos</h2>
-      
+
       {isLoading && (
         <p className="text-zinc-500 dark:text-zinc-400" role="status" aria-live="polite">
           Cargando favoritos...
         </p>
       )}
-      
+
       {showEmptyMsg && (
         <p className="text-zinc-500 dark:text-zinc-400" role="note">
           Vacio
         </p>
       )}
-      
+
       <AnimatePresence>
         {!isLoading && favorites.length > 0 && (
           <motion.nav
@@ -82,7 +81,7 @@ export function FavoriteList({ folderPath }: FavoriteListProps) {
           >
             <SortableContext items={favorites.map(f => f.id)} strategy={verticalListSortingStrategy}>
               <motion.ul
-                className="grid gap-4 sm:grid-cols-2 md:grid-cols-3"
+                className="grid gap-1 sm:grid-cols-2 md:grid-cols-3"
                 role="list"
               >
                 {favorites.map((fav) => (

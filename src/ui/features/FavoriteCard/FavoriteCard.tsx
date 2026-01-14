@@ -45,12 +45,12 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
       console.error(error);
     }
   };
- 
+
   return (
     <section
       className="bg-white dark:bg-zinc-800 rounded-lg p-0.5 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
     >
-      {/* Handle específico para drag and drop */}
+
       <button
         {...dragHandleProps}
         className="cursor-grab active:cursor-grabbing p-1 text-zinc-400 hover:text-zinc-600"
@@ -58,12 +58,12 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
       >
         <FiMove />
       </button>
-      
+
       <picture>
         <img
           src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
           alt="favicon"
-          className="size-6 rounded"
+          className="size-4 rounded"
           style={{ minWidth: 24, minHeight: 24 }}
         />
       </picture>
@@ -110,7 +110,7 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
             >
               {favorite.title}
             </a>
-            
+
             <div className="flex items-center gap-4">
               <button
                 onClick={e => {
