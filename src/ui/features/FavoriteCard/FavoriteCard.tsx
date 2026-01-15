@@ -63,8 +63,7 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
         <img
           src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
           alt="favicon"
-          className="size-4 rounded"
-          style={{ minWidth: 24, minHeight: 24 }}
+          className="size-5 rounded"
         />
       </picture>
 
@@ -100,7 +99,7 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
               href={favorite.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-sm text-white hover:underline flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+              className="text-sm text-white hover:underline flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
               aria-label={`Abrir ${favorite.title}`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") window.open(favorite.url, "_blank", "noopener,noreferrer");
