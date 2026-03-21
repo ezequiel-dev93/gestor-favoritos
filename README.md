@@ -1,144 +1,73 @@
-# Gestor de Favoritos – Chrome Extension
+# Gestor de Favoritos - Chrome Extension
 
-Gestor de Favoritos es una extensión de Google Chrome diseñada para ayudarte a **organizar, guardar y gestionar enlaces de forma simple y eficiente**, directamente desde tu navegador.
+> Extensión de Chrome orientada a productividad, diseñada con foco en rendimiento extremo y arquitectura desacoplada. Optimiza la gestión de favoritos mediante interacciones fluidas (Drag & Drop) y sincronización nativa sin backend.
 
-El objetivo principal del proyecto es ofrecer una herramienta liviana, clara y orientada a productividad, evitando la complejidad innecesaria de los gestores tradicionales de favoritos.
+## 🎯 El Problema y la Solución
+El gestor nativo de favoritos de Chrome suele ser rígido y requiere múltiples clicks para organizar o categorizar enlaces del día a día. 
+**Gestor de Favoritos** centraliza este flujo en una interfaz rápida e intuitiva. Permite arrastrar elementos entre carpetas, búsqueda en tiempo real e iteraciones ágiles sin depender de un backend propio; delega toda la responsabilidad de almacenamiento persistente en la robustez de la API `chrome.storage.sync`. Esta decisión mantiene los datos vinculados de forma segura a la cuenta del usuario sin crear un "silo de datos" externo.
 
----
+## Features Principales
+- **Organización Fluida:** Sistema interactivo de *Drag & Drop* para mover favoritos y reordenar carpetas (implementado y optimizado con `@dnd-kit`).
+- **Búsqueda Real-time:** Filtrado instantáneo por coincidencia de nombre o carpeta sin latencia perceptible en el renderizado.
+- **Sincronización Multi-dispositivo:** Persistencia automática del orden posicional y contenido asociado a la cuenta de Google vinculada en el navegador.
+- **UX Cuidada:** Animaciones de estado (usando GSAP + Framer Motion) y feedback visual claro ante acciones de éxito o error (Sonner).
+- **Gestión Ágil en Cascada:** Agregado ultrarrápido, edición y borrado recursivo (al eliminar una carpeta, se eliminan referencialmente sus contenidos).
 
-## 🚀 🧠 Características Principales
+## 🛠️ Stack Tecnológico
+- **Core:** React 19, TypeScript, Vite
+- **Estado Global:** Zustand
+- **Estilos & UI:** Tailwind CSS v4, Lucide Icons
+- **Interacciones:** `@dnd-kit` (Drop & Drag logic), GSAP, Framer Motion
+- **Infraestructura:** Chrome Extensions API (Manifest V3)
 
-- 📁 Gestión de carpetas para organizar favoritos
-- ✍️ Renombrar favoritos al guardar o posteriormente
-- ➕ Añadir nuevos favoritos desde el navegador
-- 🧹 Eliminar favoritos y carpetas
-- 🎯 Búsqueda en tiempo real por nombre o carpeta
-- 🟦 Drag & drop entre carpetas (DnD Kit)
-- 📦 Guardado en `chrome.storage.sync` para mantener datos entre dispositivos
-- 💾 Orden de favoritos y carpetas persistente
-- 📦 CRUD persistente con chrome.storage.sync
-- 🧪 Interfaz con animaciones sutiles (GSAP + Frame-Motion + Tailwind)
-- 💻 Responsive & diseño limpio
+## Decisiones Técnicas y Arquitectura
+Este proyecto fue diseñado priorizando la mantenibilidad funcional y el desacoplamiento lógico, aplicando principios de **Arquitectura Limpia (Clean Architecture)** e inspiración en *DDD Light* sobre la capa frontend:
 
----
+- **Separación Vertical de Responsabilidades (Layering):**
+  - `core/`: Contiene las reglas pura del dominio y casos de uso, totalmente agnósticas a componentes React o APIs exclusivas de Chrome.
+  - `infrastructure/`: Implementaciones concretas y adaptadores como `ChromeStorageRepository`, encapsulando la asincronía y las cuotas limitantes.
+  - `ui/`: Componentes funcionales y reactivos completamente ciegos a la lógica de persistencia.
+- **Patrón Repositorio e Inversión de Dependencias:** Empaquetar el uso de la API de Chrome detrás de contratos formales no sólo habilita una testabilidad aislada profunda, sino que permitiría migrar el almacenamiento de la nube corporativa a un stack tradicional (Ej. Node.js + PostgreSQL) sin alterar un solo componente visual.
+- **Gestión de Estado de Alto Rendimiento:** Se prescindió de implementaciones pesadas o de la *Context API* nativa integrando **Zustand**. Esto garantiza renders focalizados y previene la sobre-renderización en el árbol del DOM, que era un requerimiento técnico no-negociable para sostener la fluidez a 60fps en interacciones computacionalmente demandantes como el Drag & Drop.
+- **Cold Boot Instantáneo:** En una extensión, la latencia al hacer click en el popup debe ser nula. Estructurar el bundle con *Vite* aseguró que la UI impacte la pantalla de modo casi instantáneo.
 
-🗄️ CRUD Persistente con Chrome Storage
-El gestor implementa un CRUD completo para favoritos y carpetas utilizando la clase ChromeStorageRepository en la capa de infraestructura. Esto permite:
+## Instalación Local (Modo Desarrollo)
+Al ser un proyecto frontend empaquetado bajo las convenciones Manifest V3, la puesta en marcha incluye la compilación inyectada a una subcarpeta:
 
-🔹 Crear: Agregar nuevos favoritos y carpetas, persistiendo los datos en chrome.storage.sync.
-
-🔍 Leer: Obtener todos los favoritos, buscar por carpeta o por ID, y listar carpetas existentes.
-
-✏️ Actualizar: Modificar el título, carpeta o cualquier dato de un favorito.
-
-❌ Eliminar: Borrar favoritos individuales, eliminar todos los favoritos, o eliminar una carpeta (y todos los favoritos asociados a ella).
-
----
-
-
-## 🧠 Filosofía del proyecto
-
-Esta extensión está pensada como un **producto en evolución**, priorizando:
-
-* Simplicidad y claridad de uso
-* Código mantenible y escalable
-* Uso responsable de datos (sin tracking invasivo)
-* Iteraciones pequeñas y mejoras continuas
-
----
-
-## 🧩 Tecnologías utilizadas
-
-* 🧰 Vite
-* ⚛️ React + TypeScript
-* 🎨 TailwindCSS
-* 🧠 Zustand para estado global
-* 🧲 DnD Kit para drag and drop
-* 🌈 GSAP + Frame-Motion
-* 🍞 Sonner Notificación
-* 📦 Chrome Extensions API (Manifest V3)
-* 📦 Chrome Storage API
-
----
-
-## 📦 Instalación (modo desarrollo)
-
-1. Clonar el repositorio:
-
+1. Clonar el repositorio fuente:
    ```bash
    git clone https://github.com/ezequiel-dev93/gestor-favoritos.git
+
+2. Instalar  el arbol de dependencias:
+   ```bash
+   pnpm install
    ```
 
-2. Abrir Google Chrome y navegar a:
-
+3. Constuir el empaquetado final para pprodución (/dist):
+   ```bash
+   pnpm run build
    ```
-   chrome://extensions
-   ```
 
-3. Activar **Developer mode** (modo desarrollador)
+4. Navegar a Chrome chrome://extensions/ desde el navegador.
+5. Habilitar el "Modo Desarrollador" (Developer mode).
+6. Hacer clic en "Cargar descomprimida" (Load unpacked).
+7. Seleccionar la carpeta /dist.
 
-4. Seleccionar **Load unpacked**
+## Apredisajes y Desafíos
+- LifeCycle API: Afrontar cuellos de botella de naturaleza asíncrona frente a la API de Chrome sin reurrir a locks bloqueantes de promesas, debiendo sortear los rate limints intrínsecos del guardadop de sesión del navegador.
+- Coherencia y Race Conditions: Resolver y empalmar el estado oiptimista (optimistic UI updates) continuo de arrastre en pantala frente trasacciones lentos ejecutados enm background, garantizando corcordancia matemática entre memoria volatil local y guardado crudo.
+- Validez Arquitectónica Frontend: Comprobar sistematicamente en la fase de escalabilidad de aplicar dominio de arquitectura fuera de unn entorno backend es fundamental, otorgando inestimable para agregar robustez visual futura a alta velocidad y bajo technical debt.
 
-5. Elegir la carpeta raíz del proyecto
+## Próximas Mejoras (Roadmap Voluntario)
+- Incorporar capaciadad rapida de edición de nombre descripciones sobre carpetas.
+- Soporte para exportación completa hacia formatos abiertos (JSON, CSV) para promover el backup o portabilidad  de vínculos manual.
+- Mecanismo para la importación externa de favoritos para restauraciones o cambio del  account original.
 
-La extensión quedará cargada y lista para usar.
-
----
-
-## 🛠️ Desarrollo y estructura del proyecto
-
-Estructura general del proyecto:
-
-* `manifest.json` – Configuración principal de la extensión
-* `popup.html` – Interfaz de usuario
-* `popup.js` – Lógica principal de la extensión
-* `styles.css` – Estilos
-* `icons/` – Íconos de la extensión
-
-El estado de los favoritos se gestiona mediante `chrome.storage`, garantizando persistencia y buen rendimiento.
-
----
-
-## 🔐 Privacidad y datos
-
-Gestor de Favoritos:
-
-* **No recolecta datos personales**
-* **No envía información a servidores externos**
-* Utiliza únicamente almacenamiento local del navegador
-
-La privacidad del usuario es una prioridad del proyecto.
-
----
-
-## 📈 Roadmap (próximas funcionalidades)
-
-* Exportación de favoritos (JSON / CSV)
-* Importación de favoritos
-* Mejoras en la organización (búsqueda y filtros)
-* Optimización de experiencia de usuario
-
-El roadmap puede evolucionar en función del feedback de los usuarios.
-
----
-
-## 🐞 Reporte de errores y sugerencias
-
-Si encontrás un bug o tenés una idea para mejorar la extensión:
-
-* Abrí un issue en el repositorio
-* Describí el problema o sugerencia de la forma más clara posible
-
-Toda contribución o feedback es bienvenida.
-
----
+~~~ 
+Desarrollado abordando una enefeciencia personal  convertida en un enfoque de Ingeniería y arquitectura formal.
+~~~
 
 ## 📄 Licencia
-
 Este proyecto se distribuye bajo licencia MIT.
 
----
 
-## 📌 Estado del proyecto
-
-El proyecto se encuentra en **desarrollo activo** y se actualiza de forma iterativa.
