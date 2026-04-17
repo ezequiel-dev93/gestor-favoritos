@@ -8,6 +8,7 @@ import type { Favorite } from "@/core/favorites/entities/Favorite";
 import { updateFavorite } from "@/core/favorites/useCases/updateFavorite";
 import { addFolderNode } from "@/core/favorites/entities/addFolderNode";
 import { deleteFavorite as deleteFavoriteUseCase } from "@/core/favorites/useCases/deleteFavorite";
+import { updateFolderNode } from "@/core/favorites/useCases/updateFolderNode";
 
 
 interface FavoritesState {
@@ -27,6 +28,7 @@ interface FavoritesState {
   updateFavoriteTitle: (id: string, newTitle: string) => Promise<void>;
   setFavorites: (favorites: Favorite[]) => void;
   addFolder: (folderPath: string[]) => Promise<void>;
+  updateFolderName: (path: string[], newName: string) => Promise<void>;
   saveFavoritesOrder: (newOrder: Favorite[]) => Promise<void>;
   searchFavorites: (query: string) => Promise<void>;
 }
@@ -122,6 +124,61 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     } catch (error) {
       console.error('Error al crear carpeta:', error);
       throw new Error(error instanceof Error ? error.message : 'Error desconocido al crear carpeta');
+    }
+  },
+
+  updateFolderName: async (path: string[], newName: string) => {
+    try {
+      const repo = new ChromeStorageRepository();
+      let folders = await repo.getFolders();
+
+      const oldPathStr = path.join('/');
+      const parentPath = path.slice(0, -1);
+      const newPathStr = [...parentPath, newName].join('/');
+
+      // Actualizar el nombre de la carpeta en el árbol
+      folders = updateFolderNode(folders, path, newName);
+      await repo.saveFolders(folders);
+
+      // Actualizar el campo folder de los favoritos que usaban la ruta antigua
+      const favorites = await repo.getFavorites();
+      const updatedFavorites = favorites.map((f) => {
+        // Si el favorito está exactamente en la carpeta renombrada
+        if (f.folder === oldPathStr) {
+          return { ...f, folder: newPathStr };
+        }
+        // Si el favorito está en una subcarpeta de la carpeta renombrada
+        if (f.folder?.startsWith(oldPathStr + '/')) {
+          return { ...f, folder: f.folder.replace(oldPathStr, newPathStr) };
+        }
+        return f;
+      });
+      await repo.saveFavorites(updatedFavorites);
+
+      // Actualizar el estado: folders, favorites y selectedFolder si corresponde
+      const currentSelected = get().selectedFolder;
+      let newSelectedFolder = currentSelected;
+
+      // Si la carpeta seleccionada es la que se renombró o es hija de ella
+      if (currentSelected) {
+        const currentSelectedStr = currentSelected.join('/');
+        if (currentSelectedStr === oldPathStr) {
+          newSelectedFolder = [...parentPath, newName];
+        } else if (currentSelectedStr.startsWith(oldPathStr + '/')) {
+          newSelectedFolder = currentSelected.map((part, index) =>
+            index < path.length - 1 ? part : index === path.length - 1 ? newName : part
+          );
+        }
+      }
+
+      set({
+        folders,
+        favorites: updatedFavorites,
+        selectedFolder: newSelectedFolder,
+      });
+    } catch (error) {
+      console.error('Error al actualizar carpeta:', error);
+      throw new Error(error instanceof Error ? error.message : 'Error desconocido al actualizar carpeta');
     }
   },
 

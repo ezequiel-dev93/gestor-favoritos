@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FocusTrap } from 'focus-trap-react';
+import { Toaster } from 'sonner';
 import IconButton from '@/ui/components/IconButton';
 import { FloatingOpenButton } from '@/ui/components/FloatingOpenButton';
 import { Header } from '@/ui/components/Header';
@@ -29,6 +30,7 @@ export default function AsidePanel({
   const selectedFolder = useFavoritesStore((state) => state.selectedFolder);
   const setSelectedFolder = useFavoritesStore((state) => state.setSelectedFolder);
   const deleteFolder = useFavoritesStore((state) => state.deleteFolder);
+  const updateFolderName = useFavoritesStore((state) => state.updateFolderName);
   const loadFolders = useFavoritesStore((state) => state.loadFolders);
   const loadFavoritesByFolder = useFavoritesStore((state) => state.loadFavoritesByFolder);
   const loadAllFavorites = useFavoritesStore((state) => state.loadAllFavorites);
@@ -122,6 +124,15 @@ export default function AsidePanel({
 
                 <section className="border-zinc-300 dark:border-zinc-800 pt-6">
                   <Header />
+                  <Toaster
+                    position="top-center"
+                    richColors
+                    expand
+                    duration={3000}
+                    visibleToasts={3}
+                    theme="system"
+                    toastOptions={{ className: "z-[99999]" }}
+                  />
                 </section>
 
                 <section
@@ -171,6 +182,7 @@ export default function AsidePanel({
                           selectedFolder={selectedFolder}
                           setSelectedFolder={setSelectedFolder}
                           deleteFolder={deleteFolder}
+                          updateFolderName={updateFolderName}
                           level={0}
                         />
                       </section>

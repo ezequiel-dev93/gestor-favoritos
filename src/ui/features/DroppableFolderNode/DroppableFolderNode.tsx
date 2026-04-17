@@ -10,6 +10,7 @@ interface DroppableFolderNodeProps {
   selectedFolder: string[] | null;
   setSelectedFolder: (folder: string[] | null) => void;
   deleteFolder: (folderPath: string[]) => void;
+  updateFolderName?: (path: string[], newName: string) => Promise<void>;
   level?: number;
 }
 
@@ -19,6 +20,7 @@ export const DroppableFolderNode: React.FC<DroppableFolderNodeProps> = ({
   selectedFolder,
   setSelectedFolder,
   deleteFolder,
+  updateFolderName,
   level = 0,
 }) => {
   return (
@@ -31,6 +33,7 @@ export const DroppableFolderNode: React.FC<DroppableFolderNodeProps> = ({
           selectedFolder={selectedFolder}
           setSelectedFolder={setSelectedFolder}
           deleteFolder={deleteFolder}
+          updateFolderName={updateFolderName}
           level={level}
         />
       ))}
@@ -44,6 +47,7 @@ interface FolderNodeWrapperProps {
   selectedFolder: string[] | null;
   setSelectedFolder: (folder: string[] | null) => void;
   deleteFolder: (folderPath: string[]) => void;
+  updateFolderName?: (path: string[], newName: string) => Promise<void>;
   level: number;
 }
 
@@ -53,6 +57,7 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
   selectedFolder,
   setSelectedFolder,
   deleteFolder,
+  updateFolderName,
   level,
 }) => {
   const folderProps = useDroppableFolderNode({
@@ -66,7 +71,7 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
 
   return (
     <li className="list-none mb-4">
-      <FolderNodeItem {...folderProps} />
+      <FolderNodeItem {...folderProps} onUpdateName={updateFolderName} />
 
       {folderProps.isOpen && folderProps.hasChildren && (
         <ul>
@@ -76,6 +81,7 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
             selectedFolder={selectedFolder}
             setSelectedFolder={setSelectedFolder}
             deleteFolder={deleteFolder}
+            updateFolderName={updateFolderName}
             level={level + 1}
           />
         </ul>

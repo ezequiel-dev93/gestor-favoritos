@@ -59,7 +59,6 @@ Al ser un proyecto frontend empaquetado bajo las convenciones Manifest V3, la pu
 - Validez Arquitectónica Frontend: Comprobar sistematicamente en la fase de escalabilidad de aplicar dominio de arquitectura fuera de unn entorno backend es fundamental, otorgando inestimable para agregar robustez visual futura a alta velocidad y bajo technical debt.
 
 ## Próximas Mejoras (Roadmap Voluntario)
-- Incorporar capaciadad rapida de edición de nombre descripciones sobre carpetas.
 - Soporte para exportación completa hacia formatos abiertos (JSON, CSV) para promover el backup o portabilidad  de vínculos manual.
 - Mecanismo para la importación externa de favoritos para restauraciones o cambio del  account original.
 
