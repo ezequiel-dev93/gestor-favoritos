@@ -48,12 +48,13 @@ export default function AsidePanel({
   }, [loadFolders]);
 
   useEffect(() => {
+    if (isSearching) return;
     if (selectedFolder) {
       loadFavoritesByFolder();
     } else {
       loadAllFavorites();
     }
-  }, [selectedFolder, loadFavoritesByFolder, loadAllFavorites]);
+  }, [selectedFolder, loadFavoritesByFolder, loadAllFavorites, isSearching]);
 
   useEffect(() => {
     if (!open) return;

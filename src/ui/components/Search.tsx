@@ -15,7 +15,7 @@ export function SearchInput() {
     }, 200);
 
     return () => clearTimeout(delayDebounce);
-  }, [query]);
+  }, [query, searchFavorites]);
 
   useEffect(() => {
     if (isOpen) {

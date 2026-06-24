@@ -12,6 +12,7 @@ interface DroppableFolderNodeProps {
   deleteFolder: (folderPath: string[]) => void;
   updateFolderName?: (path: string[], newName: string) => Promise<void>;
   level?: number;
+  showFavorites?: boolean;
 }
 
 export const DroppableFolderNode: React.FC<DroppableFolderNodeProps> = ({
@@ -22,12 +23,13 @@ export const DroppableFolderNode: React.FC<DroppableFolderNodeProps> = ({
   deleteFolder,
   updateFolderName,
   level = 0,
+  showFavorites = true,
 }) => {
   return (
     <>
       {nodes.map((node) => (
         <FolderNodeWrapper
-          key={node.name}
+          key={[...path, node.name].join("/")}
           node={node}
           path={path}
           selectedFolder={selectedFolder}
@@ -35,6 +37,7 @@ export const DroppableFolderNode: React.FC<DroppableFolderNodeProps> = ({
           deleteFolder={deleteFolder}
           updateFolderName={updateFolderName}
           level={level}
+          showFavorites={showFavorites}
         />
       ))}
     </>
@@ -49,6 +52,7 @@ interface FolderNodeWrapperProps {
   deleteFolder: (folderPath: string[]) => void;
   updateFolderName?: (path: string[], newName: string) => Promise<void>;
   level: number;
+  showFavorites?: boolean;
 }
 
 const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
@@ -59,6 +63,7 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
   deleteFolder,
   updateFolderName,
   level,
+  showFavorites = true,
 }) => {
   const folderProps = useDroppableFolderNode({
     node,
@@ -83,11 +88,12 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
             deleteFolder={deleteFolder}
             updateFolderName={updateFolderName}
             level={level + 1}
+            showFavorites={showFavorites}
           />
         </ul>
       )}
 
-      {selectedFolder &&
+      {showFavorites && selectedFolder &&
         folderProps.currentPath.length === selectedFolder.length &&
         folderProps.currentPath.every((val, index) => val === selectedFolder[index]) && (
           <div className="pl-6">

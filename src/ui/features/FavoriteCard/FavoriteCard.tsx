@@ -3,13 +3,7 @@ import { FiEdit3, FiMove } from "react-icons/fi";
 import { TfiTrash } from "react-icons/tfi";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { notifySuccess, notifyError } from "@/core/utils/notify";
-
-interface Favorite {
-  id: string;
-  title: string;
-  url: string;
-  folder?: string;
-}
+import type { Favorite } from "@/core/favorites/entities/Favorite";
 
 interface FavoriteCardProps {
   favorite: Favorite;

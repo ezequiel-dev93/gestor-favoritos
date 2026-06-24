@@ -50,10 +50,10 @@ export function FavoriteList({ folderPath }: FavoriteListProps) {
   const showEmptyMsg = !isLoading && favorites.length === 0 && folders.length > 0 && folderPath && !isSearching;
 
   useEffect(() => {
-    if (folderPath) {
+    if (folderPath && !isSearching) {
       loadFavoritesByFolder();
     }
-  }, [folderPath, loadFavoritesByFolder]);
+  }, [folderPath, loadFavoritesByFolder, isSearching]);
 
   return (
     <section className="px-4" aria-labelledby="favorites-heading">

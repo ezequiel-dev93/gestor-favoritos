@@ -64,6 +64,7 @@ const FolderExplorerModal: React.FC<FolderExplorerModalProps> = ({
             }
           }}
           level={0}
+          showFavorites={false}
         />
       </div>
 

@@ -1,72 +1,123 @@
-# Gestor de Favoritos - Chrome Extension
+# 🔖 Gestor de Favoritos — Chrome Extension
 
-> Extensión de Chrome orientada a productividad, diseñada con foco en rendimiento extremo y arquitectura desacoplada. Optimiza la gestión de favoritos mediante interacciones fluidas (Drag & Drop) y sincronización nativa sin backend.
+> **TL;DR:** Extensión de Chrome que reemplaza la nueva pestaña con un gestor visual de favoritos. Construida con Clean Architecture, principios SOLID y foco en UX fluida. Sincronización nativa sin backend, exportación/importación de datos y Drag & Drop incluidos.
+
+---
 
 ## 🎯 El Problema y la Solución
-El gestor nativo de favoritos de Chrome suele ser rígido y requiere múltiples clicks para organizar o categorizar enlaces del día a día. 
-**Gestor de Favoritos** centraliza este flujo en una interfaz rápida e intuitiva. Permite arrastrar elementos entre carpetas, búsqueda en tiempo real e iteraciones ágiles sin depender de un backend propio; delega toda la responsabilidad de almacenamiento persistente en la robustez de la API `chrome.storage.sync`. Esta decisión mantiene los datos vinculados de forma segura a la cuenta del usuario sin crear un "silo de datos" externo.
 
-## Features Principales
-- **Organización Fluida:** Sistema interactivo de *Drag & Drop* para mover favoritos y reordenar carpetas (implementado y optimizado con `@dnd-kit`).
-- **Búsqueda Real-time:** Filtrado instantáneo por coincidencia de nombre o carpeta sin latencia perceptible en el renderizado.
-- **Sincronización Multi-dispositivo:** Persistencia automática del orden posicional y contenido asociado a la cuenta de Google vinculada en el navegador.
-- **UX Cuidada:** Animaciones de estado (usando GSAP + Framer Motion) y feedback visual claro ante acciones de éxito o error (Sonner).
-- **Gestión Ágil en Cascada:** Agregado ultrarrápido, edición y borrado recursivo (al eliminar una carpeta, se eliminan referencialmente sus contenidos).
+El gestor nativo de favoritos de Chrome es rígido: múltiples clicks para categorizar, sin búsqueda rápida, sin reorganización visual. **Gestor de Favoritos** reemplaza la nueva pestaña del navegador con una interfaz completa en pantalla entera, donde cada carpeta es una tarjeta visible con sus links al instante.
+
+Toda la persistencia se delega a `chrome.storage.sync`, lo que garantiza sincronización automática entre dispositivos sin necesidad de un backend propio ni datos expuestos a terceros.
+
+---
+
+## ✨ Features Principales
+
+- **Nueva Pestaña como app:** cada `Ctrl+T` abre la app directamente en pantalla completa
+- **Grid de carpetas:** todas las carpetas y sus favoritos visibles de un vistazo, en grid responsivo auto-fill
+- **Drag & Drop:** reordenamiento fluido de favoritos entre carpetas (`@dnd-kit`)
+- **Búsqueda real-time:** filtrado instantáneo con debounce de 200ms
+- **Exportar / Importar:** backup completo en `.json` con estrategia de merge o reemplazo
+- **CRUD completo:** agregar, renombrar y eliminar favoritos y carpetas (con borrado en cascada)
+- **Animaciones:** transiciones suaves con GSAP + Framer Motion
+- **Notificaciones:** feedback visual contextual con Sonner (`top-right`)
+- **Sincronización multi-dispositivo:** persistencia automática vía `chrome.storage.sync`
+- **Easter egg:** confeti al hacer click en el link del autor en el footer 🎉
+
+---
 
 ## 🛠️ Stack Tecnológico
-- **Core:** React 19, TypeScript, Vite
-- **Estado Global:** Zustand
-- **Estilos & UI:** Tailwind CSS v4, Lucide Icons
-- **Interacciones:** `@dnd-kit` (Drop & Drag logic), GSAP, Framer Motion
-- **Infraestructura:** Chrome Extensions API (Manifest V3)
 
-## Decisiones Técnicas y Arquitectura
-Este proyecto fue diseñado priorizando la mantenibilidad funcional y el desacoplamiento lógico, aplicando principios de **Arquitectura Limpia (Clean Architecture)** e inspiración en *DDD Light* sobre la capa frontend:
+| Categoría | Tecnología |
+|-----------|-----------|
+| Core | React 19, TypeScript, Vite 7 |
+| Estado global | Zustand 5 |
+| Estilos | Tailwind CSS v4 |
+| Interacciones | `@dnd-kit`, GSAP, Framer Motion |
+| Iconos | Lucide React, React Icons |
+| Notificaciones | Sonner |
+| Efectos | canvas-confetti |
+| Extensión | Chrome Extensions API — Manifest V3 |
 
-- **Separación Vertical de Responsabilidades (Layering):**
-  - `core/`: Contiene las reglas pura del dominio y casos de uso, totalmente agnósticas a componentes React o APIs exclusivas de Chrome.
-  - `infrastructure/`: Implementaciones concretas y adaptadores como `ChromeStorageRepository`, encapsulando la asincronía y las cuotas limitantes.
-  - `ui/`: Componentes funcionales y reactivos completamente ciegos a la lógica de persistencia.
-- **Patrón Repositorio e Inversión de Dependencias:** Empaquetar el uso de la API de Chrome detrás de contratos formales no sólo habilita una testabilidad aislada profunda, sino que permitiría migrar el almacenamiento de la nube corporativa a un stack tradicional (Ej. Node.js + PostgreSQL) sin alterar un solo componente visual.
-- **Gestión de Estado de Alto Rendimiento:** Se prescindió de implementaciones pesadas o de la *Context API* nativa integrando **Zustand**. Esto garantiza renders focalizados y previene la sobre-renderización en el árbol del DOM, que era un requerimiento técnico no-negociable para sostener la fluidez a 60fps en interacciones computacionalmente demandantes como el Drag & Drop.
-- **Cold Boot Instantáneo:** En una extensión, la latencia al hacer click en el popup debe ser nula. Estructurar el bundle con *Vite* aseguró que la UI impacte la pantalla de modo casi instantáneo.
+---
 
-## Instalación Local (Modo Desarrollo)
-Al ser un proyecto frontend empaquetado bajo las convenciones Manifest V3, la puesta en marcha incluye la compilación inyectada a una subcarpeta:
+## 🏗️ Decisiones Técnicas
 
-1. Clonar el repositorio fuente:
-   ```bash
-   git clone https://github.com/ezequiel-dev93/gestor-favoritos.git
+### Clean Architecture + SOLID
 
-2. Instalar  el arbol de dependencias:
-   ```bash
-   pnpm install
-   ```
+El proyecto aplica arquitectura limpia con tres capas bien delimitadas:
 
-3. Constuir el empaquetado final para pprodución (/dist):
-   ```bash
-   pnpm run build
-   ```
+- **`core/`** — Dominio puro. Entidades, casos de uso e interfaces. Sin dependencias de React, Chrome ni ningún framework.
+- **`infrastructure/`** — Adaptadores. `ChromeStorageRepository` implementa el contrato `FavoriteRepository` y encapsula toda la asincronía de `chrome.storage.sync`.
+- **`ui/`** — Vista. Componentes reactivos que no saben cómo se persisten los datos.
 
-4. Navegar a Chrome chrome://extensions/ desde el navegador.
-5. Habilitar el "Modo Desarrollador" (Developer mode).
-6. Hacer clic en "Cargar descomprimida" (Load unpacked).
-7. Seleccionar la carpeta /dist.
+Cada componente tiene **una sola razón para cambiar (SRP)**. Ejemplos concretos:
 
-## Apredisajes y Desafíos
-- LifeCycle API: Afrontar cuellos de botella de naturaleza asíncrona frente a la API de Chrome sin reurrir a locks bloqueantes de promesas, debiendo sortear los rate limints intrínsecos del guardadop de sesión del navegador.
-- Coherencia y Race Conditions: Resolver y empalmar el estado oiptimista (optimistic UI updates) continuo de arrastre en pantala frente trasacciones lentos ejecutados enm background, garantizando corcordancia matemática entre memoria volatil local y guardado crudo.
-- Validez Arquitectónica Frontend: Comprobar sistematicamente en la fase de escalabilidad de aplicar dominio de arquitectura fuera de unn entorno backend es fundamental, otorgando inestimable para agregar robustez visual futura a alta velocidad y bajo technical debt.
+| Componente | Responsabilidad única |
+|------------|----------------------|
+| `AppLayout` | Composición del layout (header + toolbar + main) |
+| `FoldersGrid` | Renderizado del grid de tarjetas |
+| `FolderCard` | Una carpeta con su lista de favoritos |
+| `SettingsButton` | Abrir/cerrar el modal de configuración |
+| `SettingsModal` | UI de exportar e importar |
+| `exportFavorites` | Serializar y descargar el JSON |
+| `importFavorites` | Validar y persistir el backup |
 
-## Próximas Mejoras (Roadmap Voluntario)
-- Soporte para exportación completa hacia formatos abiertos (JSON, CSV) para promover el backup o portabilidad  de vínculos manual.
-- Mecanismo para la importación externa de favoritos para restauraciones o cambio del  account original.
+### Nueva Pestaña (`chrome_url_overrides`)
 
-~~~ 
-Desarrollado abordando una enefeciencia personal  convertida en un enfoque de Ingeniería y arquitectura formal.
-~~~
+En lugar de usar `chrome.sidePanel` (API que limita el ancho y la integración), la app reemplaza la nueva pestaña vía `chrome_url_overrides`. Esto permite:
+- UI en pantalla completa sin restricciones de tamaño
+- Grid responsivo que aprovecha todo el viewport
+- Zero latencia — no hay popup que abrir
+
+### Patrón Repositorio
+
+Todas las operaciones de storage pasan por el contrato `FavoriteRepository`. Esto permite cambiar el backend (ej: de `chrome.storage.sync` a un servidor REST) sin tocar ningún componente de UI.
+
+### Estado con Zustand
+
+Se eligió Zustand sobre la Context API para evitar re-renders en cascada durante operaciones intensivas como el Drag & Drop. El store es el único punto de verdad para `favorites`, `folders`, `selectedFolder` y estados de carga/búsqueda.
+
+### Exportar / Importar
+
+Los use cases `exportFavorites` e `importFavorites` operan directamente sobre el repositorio, sin acoplarse a la UI. La importación soporta dos estrategias:
+- **Merge:** agrega solo los favoritos con URLs nuevas (no duplica)
+- **Replace:** reemplaza todo el contenido actual
+
+---
+
+## 🚀 Instalación Local
+
+```bash
+# 1. Clonar
+git clone https://github.com/ezequiel-dev93/gestor-favoritos-chrome-extension.git
+
+# 2. Instalar dependencias
+pnpm install
+
+# 3. Build de producción
+pnpm run build
+```
+
+1. Ir a `chrome://extensions/`
+2. Activar **Modo Desarrollador**
+3. Click en **Cargar descomprimida** → seleccionar la carpeta `dist/`
+4. Abrir una nueva pestaña (`Ctrl+T`) ✅
+
+---
+
+## 🧠 Aprendizajes Clave
+
+- **`chrome.storage.sync` rate limits:** manejo de cuotas y reintentos sin locks bloqueantes
+- **Race conditions en DnD:** sincronizar el estado optimista (arrastre en memoria) con la escritura asíncrona en storage garantizando consistencia
+- **SOLID en frontend:** aplicar SRP e inversión de dependencias en la capa UI demuestra que la arquitectura limpia no es exclusiva del backend
+- **`chrome_url_overrides` vs Side Panel:** la nueva pestaña ofrece un canvas completo sin las restricciones del panel lateral
+
+---
 
 ## 📄 Licencia
-Este proyecto se distribuye bajo licencia MIT.
 
+MIT — libre uso con atribución.
 
+> _Desarrollado convirtiendo una ineficiencia personal en un proyecto de ingeniería con arquitectura formal._

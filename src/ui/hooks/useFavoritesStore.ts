@@ -49,6 +49,9 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       const repo = new ChromeStorageRepository();
       const data = await getAllFavorites(repo);
       set({ favorites: data });
+    } catch (error) {
+      console.error("Error cargando todos los favoritos:", error);
+      set({ favorites: [] });
     } finally {
       set({ isLoading: false });
     }
@@ -94,12 +97,15 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
   updateFavoriteTitle: async (id: string, newTitle: string) => {
     const repo = new ChromeStorageRepository();
-    const updated = await updateFavorite(id, { ...get().favorites.find(f => f.id === id)!, title: newTitle }, repo);
+    const existing = get().favorites.find((f) => f.id === id);
+    if (!existing) throw new Error(`Favorito con ID "${id}" no encontrado en el estado local`);
+
+    const updated = await updateFavorite(id, { ...existing, title: newTitle }, repo);
 
     set((state) => ({
-      favorites: state.favorites.map(fav =>
+      favorites: state.favorites.map((fav) =>
         fav.id === id ? { ...fav, title: updated.title } : fav
-      )
+      ),
     }));
   },
 
@@ -165,9 +171,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         if (currentSelectedStr === oldPathStr) {
           newSelectedFolder = [...parentPath, newName];
         } else if (currentSelectedStr.startsWith(oldPathStr + '/')) {
-          newSelectedFolder = currentSelected.map((part, index) =>
-            index < path.length - 1 ? part : index === path.length - 1 ? newName : part
-          );
+          newSelectedFolder = [...parentPath, newName, ...currentSelected.slice(path.length)];
         }
       }
 
@@ -184,7 +188,17 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
 
   saveFavoritesOrder: async (newOrder) => {
     const repo = new ChromeStorageRepository();
-    await repo.saveFavorites(newOrder);
+    const all = await repo.getFavorites();
+    const folderPath = get().selectedFolder?.join('/') || "";
+    
+    if (!get().selectedFolder) {
+      await repo.saveFavorites(newOrder);
+      return;
+    }
+    
+    const otherFavorites = all.filter(f => f.folder !== folderPath);
+    const updated = [...otherFavorites, ...newOrder];
+    await repo.saveFavorites(updated);
   },
 
   searchFavorites: async (query: string) => {
