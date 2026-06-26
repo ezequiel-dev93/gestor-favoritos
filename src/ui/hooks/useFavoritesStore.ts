@@ -3,6 +3,7 @@ import { ChromeStorageRepository } from "@/infrastructure/storage/ChromeStorageR
 import { getAllFavorites } from "@/core/favorites/useCases/useAllFavorites";
 import { getFavoritesByFolder } from "@/core/favorites/useCases/getFavoritesByFolder";
 import type { FolderNode } from "@/core/favorites/entities/FolderNode";
+import { reorderChildrenInNode } from "@/core/favorites/entities/FolderNode";
 import { deleteFolder as deleteFolderUseCase } from "@/core/favorites/useCases/deleteFolders";
 import type { Favorite } from "@/core/favorites/entities/Favorite";
 import { updateFavorite } from "@/core/favorites/useCases/updateFavorite";
@@ -30,6 +31,11 @@ interface FavoritesState {
   addFolder: (folderPath: string[]) => Promise<void>;
   updateFolderName: (path: string[], newName: string) => Promise<void>;
   saveFavoritesOrder: (newOrder: Favorite[]) => Promise<void>;
+  saveFoldersOrder: (newOrder: FolderNode[]) => Promise<void>;
+  /** Reordena favoritos dentro de una carpeta específica y persiste */
+  reorderFavoritesInFolder: (folderPathStr: string, reordered: Favorite[]) => Promise<void>;
+  /** Reordena sub-carpetas dentro de un nodo padre y persiste */
+  reorderChildrenInFolder: (parentPath: string[], newChildren: FolderNode[]) => Promise<void>;
   searchFavorites: (query: string) => Promise<void>;
 }
 
@@ -199,6 +205,30 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     const otherFavorites = all.filter(f => f.folder !== folderPath);
     const updated = [...otherFavorites, ...newOrder];
     await repo.saveFavorites(updated);
+  },
+
+  saveFoldersOrder: async (newOrder) => {
+    const repo = new ChromeStorageRepository();
+    await repo.saveFolders(newOrder);
+    set({ folders: newOrder });
+  },
+
+  reorderFavoritesInFolder: async (folderPathStr, reordered) => {
+    const repo = new ChromeStorageRepository();
+    const all = await repo.getFavorites();
+    // Reemplazar los favoritos de esta carpeta con el nuevo orden
+    const others = all.filter((f) => f.folder !== folderPathStr);
+    const updated = [...others, ...reordered];
+    await repo.saveFavorites(updated);
+    set({ favorites: updated });
+  },
+
+  reorderChildrenInFolder: async (parentPath, newChildren) => {
+    const repo = new ChromeStorageRepository();
+    const current = get().folders;
+    const updated = reorderChildrenInNode(current, parentPath, newChildren);
+    await repo.saveFolders(updated);
+    set({ folders: updated });
   },
 
   searchFavorites: async (query: string) => {

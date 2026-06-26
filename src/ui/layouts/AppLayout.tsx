@@ -17,12 +17,12 @@ import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
  * No contiene lógica de dominio — esa responsabilidad pertenece a cada sub-componente.
  */
 export function AppLayout() {
-  const isSearching       = useFavoritesStore((s) => s.isSearching);
-  const loadAllFavorites  = useFavoritesStore((s) => s.loadAllFavorites);
-  const loadFolders       = useFavoritesStore((s) => s.loadFolders);
+  const isSearching = useFavoritesStore((s) => s.isSearching);
+  const loadAllFavorites = useFavoritesStore((s) => s.loadAllFavorites);
+  const loadFolders = useFavoritesStore((s) => s.loadFolders);
 
   const [showAddFavorite, setShowAddFavorite] = useState(false);
-  const [showAddFolder, setShowAddFolder]     = useState(false);
+  const [showAddFolder, setShowAddFolder] = useState(false);
 
   // Carga inicial: folders + todos los favoritos para el grid
   useEffect(() => {
@@ -37,7 +37,7 @@ export function AppLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100">
+    <section className="flex flex-col min-h-screen text-zinc-800 dark:text-zinc-100">
       <Toaster
         position="top-right"
         richColors
@@ -48,7 +48,6 @@ export function AppLayout() {
         toastOptions={{ className: "z-[99999]" }}
       />
 
-      {/* ── 1. Header — solo logo y título ──────────────────── */}
       <header
         className="flex items-center px-8 py-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0"
         aria-label="Cabecera de la aplicación"
@@ -56,8 +55,7 @@ export function AppLayout() {
         <Header />
       </header>
 
-      {/* ── 2. Toolbar — búsqueda y acciones ────────────────── */}
-      <div
+      <article
         className="flex items-center gap-3 px-8 py-3 border-b border-zinc-200 dark:border-zinc-800 shrink-0 flex-wrap"
         role="toolbar"
         aria-label="Herramientas"
@@ -82,9 +80,8 @@ export function AppLayout() {
             + Nueva Carpeta
           </button>
         </div>
-      </div>
+      </article>
 
-      {/* ── 3. Contenido principal — grid o resultados ──────── */}
       <main
         className="flex-1 overflow-y-auto px-8 py-6"
         aria-label="Contenido principal"
@@ -118,12 +115,10 @@ export function AppLayout() {
         </AnimatePresence>
       </main>
 
-      {/* ── Footer ──────────────────────────────────────────── */}
       <footer className="shrink-0 border-t border-zinc-200 dark:border-zinc-800 px-8">
         <Footer />
       </footer>
 
-      {/* ── Modales globales (sin carpeta pre-seleccionada) ─── */}
       <AddFavoriteModal
         url=""
         folder={null}
@@ -141,9 +136,9 @@ export function AppLayout() {
           handleDataRefresh();
         }}
       />
-      {/* ── Botón flotante de configuración ────────────────── */}
+
       <SettingsButton onImportDone={handleDataRefresh} />
 
-    </div>
+    </section>
   );
 }

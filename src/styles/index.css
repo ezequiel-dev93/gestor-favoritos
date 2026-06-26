@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --app-bg: #1A1A1A;
+  --app-bg: radial-gradient(circle at 90% 5%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 4vw, transparent 20vw),
+    radial-gradient(circle at 10% 14%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 4vw, transparent 20vw),
+    radial-gradient(circle at 70% 45%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 2vw, transparent 20vw),
+    radial-gradient(circle at 14% 67%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 8vw, transparent 20vw),
+    radial-gradient(circle at 78% 90%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 8vw, transparent 20vw),
+    linear-gradient(90deg, rgb(0, 0, 0), rgb(0, 0, 0));
   --app-text: #ffffff;
   color-scheme: light dark;
 }
@@ -23,6 +28,7 @@ body {
 }
 
 body {
+  background-image: var(--app-bg);
   font-family: 'Onest Variable', sans-serif;
   color: var(--app-text);
   font-weight: 400;

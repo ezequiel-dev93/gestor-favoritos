@@ -15,12 +15,13 @@ Toda la persistencia se delega a `chrome.storage.sync`, lo que garantiza sincron
 ## ✨ Features Principales
 
 - **Nueva Pestaña como app:** cada `Ctrl+T` abre la app directamente en pantalla completa
-- **Grid de carpetas:** todas las carpetas y sus favoritos visibles de un vistazo, en grid responsivo auto-fill
-- **Drag & Drop:** reordenamiento fluido de favoritos entre carpetas (`@dnd-kit`)
-- **Búsqueda real-time:** filtrado instantáneo con debounce de 200ms
+- **Grid de carpetas:** todas las carpetas y sus favoritos visibles de un vistazo, en grid responsivo auto-fill con ajuste dinámico
+- **Drag & Drop avanzado:** reordenamiento de carpetas raíz en el grid principal, y de subcarpetas y favoritos de manera interna en cada tarjeta (`@dnd-kit`)
+- **Subcarpetas colapsables:** organización visual en árbol jerárquico con animaciones suaves de acordeón (Framer Motion) e íconos interactivos
+- **Búsqueda real-time:** filtrado instantáneo de favoritos con debounce de 200ms
 - **Exportar / Importar:** backup completo en `.json` con estrategia de merge o reemplazo
 - **CRUD completo:** agregar, renombrar y eliminar favoritos y carpetas (con borrado en cascada)
-- **Animaciones:** transiciones suaves con GSAP + Framer Motion
+- **Animaciones:** transiciones visuales y efectos interactivos con GSAP + Framer Motion
 - **Notificaciones:** feedback visual contextual con Sonner (`top-right`)
 - **Sincronización multi-dispositivo:** persistencia automática vía `chrome.storage.sync`
 - **Easter egg:** confeti al hacer click en el link del autor en el footer 🎉

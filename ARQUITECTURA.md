@@ -42,7 +42,7 @@ src/
 │   └── favorites/
 │       ├── entities/
 │       │   ├── Favorite.ts            # Entidad: { id, url, title, folder, icon? }
-│       │   ├── FolderNode.ts          # Entidad árbol + funciones: find, remove, flatten
+│       │   ├── FolderNode.ts          # Entidad árbol + funciones: find, remove, flatten, reorderChildrenInNode
 │       │   ├── addFolderNode.ts       # Mutación inmutable del árbol
 │       │   └── types.ts
 │       │
@@ -68,11 +68,8 @@ src/
 │
 ├── ui/
 │   ├── components/                    # Componentes atómicos reutilizables
-│   │   ├── AsidePanel.tsx             # Archivado — usado en versión Side Panel (referencia)
-│   │   ├── FloatingOpenButton.tsx
 │   │   ├── Footer.tsx                 # Incluye efecto confeti en link del autor
 │   │   ├── Header.tsx                 # Logo + título animado con GSAP
-│   │   ├── IconButton.tsx
 │   │   ├── Modal.tsx                  # Modal genérico reutilizable (portal)
 │   │   └── Search.tsx                 # Input con debounce + animación de apertura
 │   │
@@ -86,20 +83,19 @@ src/
 │   │   ├── FavoritesList/             # Lista sortable de favoritos
 │   │   ├── FolderExplorerModal/
 │   │   ├── FoldersGrid/
-│   │   │   ├── FolderCard.tsx         # SRP: una carpeta + su lista de favoritos + acciones hover
-│   │   │   └── FoldersGrid.tsx        # SRP: grid responsivo de FolderCards
+│   │   │   ├── FolderCard.tsx         # SRP: una carpeta + colapsabilidad animada + DnD interno + acciones hover
+│   │   │   └── FoldersGrid.tsx        # SRP: grid responsivo de FolderCards con DnD a nivel de grid
 │   │   └── Settings/
 │   │       ├── SettingsButton.tsx     # SRP: botón flotante ⚙️ (esquina inferior derecha)
 │   │       └── SettingsModal.tsx      # SRP: UI de exportar e importar
 │   │
 │   ├── hooks/
-│   │   ├── useFavoritesStore.ts       # Store Zustand — fuente de verdad global
+│   │   ├── useFavoritesStore.ts       # Store Zustand — fuente de verdad global (acciones de ordenación persistentes)
 │   │   ├── useFolderNode.ts           # Lógica de toggle/selección de un nodo de carpeta
 │   │   └── useDroppableFolderNode.ts  # Composición de useFolderNode + handleDelete
 │   │
 │   └── layouts/
-│       ├── AppLayout.tsx              # SRP: composición del layout (header + toolbar + main)
-│       └── Sidebar.tsx                # Archivado — sidebar del layout anterior (referencia)
+│       └── AppLayout.tsx              # SRP: composición del layout (header + toolbar + main)
 │
 ├── pages/
 │   └── FavoriteManager.tsx            # DnD context + FavoriteList para una carpeta
@@ -111,7 +107,7 @@ src/
 │   └── index.css                      # Base CSS: Tailwind + variables de tema + viewport full
 │
 ├── App.tsx                            # Raíz: renderiza AppLayout
-└── main.tsx                           # Entry point de React
+│   └── main.tsx                       # Entry point de React
 ```
 
 ---
@@ -148,6 +144,20 @@ Un único `useFavoritesStore` maneja todo el estado global. Zustand garantiza re
 
 ### DnD + validación de carpeta destino
 `FavoriteDndContext` valida el drop sobre carpetas usando `flattenFolderPaths` para construir todos los paths válidos. Si `overId` no coincide con ningún path conocido, el drop se ignora — evitando favoritos con `folder` inválido.
+
+### Sistema de Drag & Drop Multi-nivel
+El sistema implementa tres niveles de DnD independientes utilizando `@dnd-kit`:
+1. **Grid principal (`FoldersGrid.tsx`)**: Reordena las tarjetas de carpetas raíz en el grid.
+2. **Subcarpetas internas (`FolderCard.tsx`)**: Permite reordenar subcarpetas dentro de una carpeta raíz o de cualquier subcarpeta de nivel superior.
+3. **Favoritos internos (`FolderCard.tsx`)**: Permite reordenar los favoritos dentro de su correspondiente carpeta de forma local.
+
+Para lograr esto de forma limpia y evitar conflictos de eventos de arrastre, se anidan componentes `DndContext` aislados dentro de cada `FolderCard` para las listas de subcarpetas y favoritos, asegurando que las listas de elementos se mantengan separadas y estructuradas.
+
+### Subcarpetas Colapsables Animadas
+Para mejorar la experiencia visual y evitar la sobrecarga de elementos en pantalla:
+- Las subcarpetas dentro de un `FolderCard` se muestran colapsadas por defecto.
+- Al hacer clic en su encabezado, se expanden mostrando su contenido con una animación de acordeón fluida usando `framer-motion` y `AnimatePresence`.
+- Un ícono dinámico de carpeta (`FiFolder` / `FiFolderOpen`) y un chevron rotatorio interactivo indican si la subcarpeta está expandida o colapsada.
 
 ---
 

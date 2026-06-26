@@ -50,3 +50,30 @@ export function flattenFolderPaths(
   }
   return paths;
 }
+
+/**
+ * Reordena los children de un nodo en el árbol dado su path.
+ * Usado por el DnD interno de sub-carpetas dentro de una FolderCard.
+ */
+export function reorderChildrenInNode(
+  root: FolderNode[],
+  parentPath: string[],
+  newChildren: FolderNode[]
+): FolderNode[] {
+  if (parentPath.length === 0) {
+    // Reordenar a nivel raíz
+    return newChildren;
+  }
+  const [head, ...rest] = parentPath;
+  return root.map((node) => {
+    if (node.name !== head) return node;
+    if (rest.length === 0) {
+      return { ...node, children: newChildren };
+    }
+    return {
+      ...node,
+      children: reorderChildrenInNode(node.children ?? [], rest, newChildren),
+    };
+  });
+}
+
