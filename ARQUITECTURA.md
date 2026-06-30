@@ -142,6 +142,11 @@ Un único `useFavoritesStore` maneja todo el estado global. Zustand garantiza re
 ### Export/Import en el dominio
 `exportFavorites` e `importFavorites` viven en `core/useCases/` — no en la UI. La UI solo orquesta: llama al use case, muestra el resultado. Si se cambia el formato de backup (ej: agregar CSV), solo cambia el use case.
 
+### Persistencia y Fragmentación de Datos (Sharding)
+`ChromeStorageRepository` usa `chrome.storage.sync` para sincronización multi-dispositivo. Sin embargo, Google impone un límite estricto de 8 KB por clave (`QUOTA_BYTES_PER_ITEM`). Para evadir este límite y guardar miles de favoritos sin perder la sincronización, el repositorio implementa una estrategia de **Sharding (Fragmentación)** transparente:
+- Al guardar: Serializa el JSON y lo corta en "chunks" de 7.5 KB. Guarda metadata y múltiples claves (`favorites_0`, `favorites_1`, etc.).
+- Al leer: Lee la metadata, descarga todos los chunks en paralelo, los reensambla y parsea el JSON resultante.
+
 ### DnD + validación de carpeta destino
 `FavoriteDndContext` valida el drop sobre carpetas usando `flattenFolderPaths` para construir todos los paths válidos. Si `overId` no coincide con ningún path conocido, el drop se ignora — evitando favoritos con `folder` inválido.
 

@@ -4,7 +4,7 @@ import { Modal } from "@/ui/components/Modal";
 import { ChromeStorageRepository } from "@/infrastructure/storage/ChromeStorageRepository";
 import { exportFavorites } from "@/core/favorites/useCases/exportFavorites";
 import {
-  parseImportFile,
+  detectAndParseFile,
   importFavorites,
   type ImportStrategy,
   type ImportPreview,
@@ -54,7 +54,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
     const reader = new FileReader();
     reader.onload = (evt) => {
       try {
-        const parsed = parseImportFile(evt.target?.result as string);
+        const parsed = detectAndParseFile(evt.target?.result as string, file.name);
         setPreview(parsed);
       } catch (err) {
         setPreviewError(err instanceof Error ? err.message : "Archivo inválido");
@@ -133,8 +133,11 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
             Importar
           </h3>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Seleccioná un archivo <code className="bg-zinc-100 dark:bg-zinc-700 px-1 rounded text-xs">.json</code> exportado
-            previamente para restaurar tus favoritos.
+            Seleccioná un archivo{" "}
+            <code className="bg-zinc-100 dark:bg-zinc-700 px-1 rounded text-xs">.json</code>
+            {" "}exportado previamente, o un archivo{" "}
+            <code className="bg-zinc-100 dark:bg-zinc-700 px-1 rounded text-xs">.html</code>
+            {" "}exportado desde Chrome o Brave para restaurar tus favoritos.
           </p>
 
           {/* Input de archivo */}
@@ -150,7 +153,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
             <input
               ref={fileInputRef}
               type="file"
-              accept=".json,application/json"
+              accept=".json,application/json,.html,.htm,text/html"
               onChange={handleFileChange}
               className="hidden"
               aria-hidden="true"

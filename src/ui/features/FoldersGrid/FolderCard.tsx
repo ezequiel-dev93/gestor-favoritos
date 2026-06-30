@@ -1,19 +1,11 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiEdit3, FiX, FiPlus, FiFolder, FiChevronRight } from "react-icons/fi";
+import { FiEdit3, FiX, FiPlus, FiFolder, FiChevronRight, FiMoreVertical } from "react-icons/fi";
 import { RxDragHandleDots2 } from "react-icons/rx";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
-  arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -87,6 +79,22 @@ function SortableFavoriteRow({ fav, onDelete }: SortableFavoriteRowProps) {
   );
 }
 
+function FolderInnerDropzone({ folderPathStr }: { folderPathStr: string }) {
+  const { isOver, setNodeRef } = useDroppable({ id: `drop-inside-${folderPathStr}` });
+  return (
+    <div
+      ref={setNodeRef}
+      className={`mt-2 p-3 border-2 border-dashed rounded-lg text-center transition-colors ${
+        isOver
+          ? "border-purple-500 bg-purple-500/10 text-purple-600"
+          : "border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-400"
+      }`}
+    >
+      <span className="text-xs font-medium">Soltar aquí para mover adentro</span>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // FolderCard
 // ─────────────────────────────────────────────────────────────────────────────
@@ -99,21 +107,6 @@ interface FolderCardProps {
   onFavoriteAdded: () => void;
 }
 
-/**
- * FolderCard — SRP: renderiza una carpeta con favoritos y sub-carpetas.
- *
- * Carpetas raiz (path=[]):
- *   - Siempre expandidas.
- *   - Participan en el DnD del grid (FoldersGrid).
- *
- * Sub-carpetas (path.length > 0):
- *   - Comienzan colapsadas, expandibles con click.
- *   - Muestran icono de carpeta + chevron animado.
- *   - Participan en el DnD interno de su carpeta padre.
- *
- * El contenido de cada card (favoritos + sub-carpetas) tiene sus propios
- * DndContext para reordenamiento interno, independientes del grid exterior.
- */
 export function FolderCard({
   folder,
   path = [],
@@ -122,22 +115,21 @@ export function FolderCard({
   onDeleteFolder,
   onFavoriteAdded,
 }: FolderCardProps) {
-  const deleteFavorite           = useFavoritesStore((s) => s.deleteFavorite);
-  const reorderFavoritesInFolder = useFavoritesStore((s) => s.reorderFavoritesInFolder);
-  const reorderChildrenInFolder  = useFavoritesStore((s) => s.reorderChildrenInFolder);
+  const deleteFavorite = useFavoritesStore((s) => s.deleteFavorite);
 
   const isRootFolder = path.length === 0;
 
-  const [isOpen, setIsOpen]                     = useState(isRootFolder);
-  const [isEditingFolder, setIsEditingFolder]   = useState(false);
-  const [newFolderName, setNewFolderName]       = useState(folder.name);
-  const [showAddFavorite, setShowAddFavorite]   = useState(false);
+  const [isOpen, setIsOpen] = useState(isRootFolder);
+  const [isEditingFolder, setIsEditingFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState(folder.name);
+  const [showAddFavorite, setShowAddFavorite] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
-  const currentPath     = [...path, folder.name];
-  const folderPathStr   = currentPath.join("/");
+  const currentPath = [...path, folder.name];
+  const folderPathStr = currentPath.join("/");
   const folderFavorites = favorites.filter((f) => f.folder === folderPathStr);
-  const hasChildren     = (folder.children?.length ?? 0) > 0;
-  const isEmpty         = folderFavorites.length === 0 && !hasChildren;
+  const hasChildren = (folder.children?.length ?? 0) > 0;
+  const isEmpty = folderFavorites.length === 0 && !hasChildren;
 
   const {
     attributes,
@@ -155,47 +147,10 @@ export function FolderCard({
     zIndex: isDragging ? 50 : undefined,
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  );
-
   const childrenIds = (folder.children ?? []).map((c) =>
     [...currentPath, c.name].join("/")
   );
   const favoriteIds = folderFavorites.map((f) => f.id);
-
-  const handleFavoritesDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const oldIdx = folderFavorites.findIndex((f) => f.id === String(active.id));
-    const newIdx = folderFavorites.findIndex((f) => f.id === String(over.id));
-    if (oldIdx === -1 || newIdx === -1) return;
-    try {
-      await reorderFavoritesInFolder(folderPathStr, arrayMove(folderFavorites, oldIdx, newIdx));
-      notifySuccess("Orden actualizado");
-    } catch {
-      notifyError("No se pudo reordenar");
-    }
-  };
-
-  const handleChildrenDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const children = folder.children ?? [];
-    const oldIdx = children.findIndex(
-      (c) => [...currentPath, c.name].join("/") === String(active.id)
-    );
-    const newIdx = children.findIndex(
-      (c) => [...currentPath, c.name].join("/") === String(over.id)
-    );
-    if (oldIdx === -1 || newIdx === -1) return;
-    try {
-      await reorderChildrenInFolder(currentPath, arrayMove(children, oldIdx, newIdx));
-      notifySuccess("Sub-carpetas reordenadas");
-    } catch {
-      notifyError("No se pudo reordenar");
-    }
-  };
 
   const handleRenameFolder = async () => {
     const trimmed = newFolderName.trim();
@@ -279,7 +234,7 @@ export function FolderCard({
             </button>
           ) : (
             <div className="flex items-center gap-1.5 flex-1 min-w-0">
-              <FiFolder size={14} className="shrink-0 text-purple-500" />
+               <FiFolder size={14} className="shrink-0 text-purple-500" />
               <h2 className="text-sm font-bold text-zinc-700 dark:text-zinc-200 truncate select-none">
                 {folder.name}
               </h2>
@@ -287,40 +242,90 @@ export function FolderCard({
           )}
 
           {!isEditingFolder && (
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-auto shrink-0">
+            <div className={`flex items-center gap-1 transition-opacity ml-auto shrink-0 relative z-10 ${showMenu ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
               <button
                 {...dragListeners}
                 {...attributes}
-                aria-label="Arrastrar para reordenar"
-                title="Arrastrar para reordenar"
-                className="p-1 text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-300 cursor-grab active:cursor-grabbing transition-colors"
+                aria-label="Arrastrar para reordenar o mover"
+                title="Arrastrar"
+                className="p-1.5 text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-grab active:cursor-grabbing transition-colors"
               >
-                <RxDragHandleDots2 size={14} />
+                <RxDragHandleDots2 size={15} />
               </button>
+              
               <button
-                onClick={() => setShowAddFavorite(true)}
-                aria-label={`Agregar favorito a ${folder.name}`}
-                title="Agregar favorito"
-                className="p-1 text-zinc-400 hover:text-purple-500 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMenu(!showMenu);
+                }}
+                title="Opciones de carpeta"
+                className={`p-1.5 transition-colors rounded-md ${
+                  showMenu 
+                    ? "bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-100" 
+                    : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50"
+                }`}
               >
-                <FiPlus size={13} />
+                <FiMoreVertical size={14} />
               </button>
-              <button
-                onClick={() => setIsEditingFolder(true)}
-                aria-label={`Renombrar ${folder.name}`}
-                title="Renombrar carpeta"
-                className="p-1 text-zinc-400 hover:text-blue-500 transition-colors"
-              >
-                <FiEdit3 size={12} />
-              </button>
-              <button
-                onClick={() => onDeleteFolder(currentPath)}
-                aria-label={`Eliminar ${folder.name}`}
-                title="Eliminar carpeta"
-                className="p-1 text-zinc-400 hover:text-red-500 transition-colors"
-              >
-                <FiX size={13} />
-              </button>
+
+              <AnimatePresence>
+                {showMenu && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowMenu(false);
+                      }} 
+                    />
+                    
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-700 z-50 overflow-hidden"
+                    >
+                      <div className="flex flex-col py-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowMenu(false);
+                            setShowAddFavorite(true);
+                          }}
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors text-left"
+                        >
+                          <FiPlus size={14} className="text-purple-500 shrink-0" />
+                          <span className="truncate">Agregar Favorito</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowMenu(false);
+                            setIsEditingFolder(true);
+                          }}
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors text-left"
+                        >
+                          <FiEdit3 size={14} className="text-blue-500 shrink-0" />
+                          <span className="truncate">Renombrar</span>
+                        </button>
+                        <div className="h-px bg-zinc-200 dark:bg-zinc-700 my-1 mx-2" />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowMenu(false);
+                            onDeleteFolder(currentPath);
+                          }}
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left"
+                        >
+                          <FiX size={14} className="shrink-0" />
+                          <span className="truncate">Eliminar</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           )}
         </div>
@@ -338,56 +343,46 @@ export function FolderCard({
               className="flex flex-col gap-2"
             >
               {isEmpty && (
-                <p className="text-xs text-zinc-400 italic">Sin favoritos aun</p>
+                <p className="text-xs text-zinc-400 italic mt-2">Sin favoritos aun</p>
               )}
 
               {hasChildren && (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleChildrenDragEnd}
-                >
-                  <SortableContext items={childrenIds} strategy={verticalListSortingStrategy}>
-                    <div className="flex flex-col gap-1.5">
-                      {folder.children!.map((child) => (
-                        <FolderCard
-                          key={[...currentPath, child.name].join("/")}
-                          folder={child}
-                          path={currentPath}
-                          favorites={favorites}
-                          onUpdateName={onUpdateName}
-                          onDeleteFolder={onDeleteFolder}
-                          onFavoriteAdded={onFavoriteAdded}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                <SortableContext items={childrenIds} strategy={verticalListSortingStrategy}>
+                  <div className="flex flex-col gap-1.5 mt-2">
+                    {folder.children!.map((child) => (
+                      <FolderCard
+                        key={[...currentPath, child.name].join("/")}
+                        folder={child}
+                        path={currentPath}
+                        favorites={favorites}
+                        onUpdateName={onUpdateName}
+                        onDeleteFolder={onDeleteFolder}
+                        onFavoriteAdded={onFavoriteAdded}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
               )}
 
               {folderFavorites.length > 0 && (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleFavoritesDragEnd}
-                >
-                  <SortableContext items={favoriteIds} strategy={verticalListSortingStrategy}>
-                    <ul
-                      className="flex flex-col gap-1.5"
-                      role="list"
-                      aria-label={`Favoritos en ${folder.name}`}
-                    >
-                      {folderFavorites.map((fav) => (
-                        <SortableFavoriteRow
-                          key={fav.id}
-                          fav={fav}
-                          onDelete={handleDeleteFavorite}
-                        />
-                      ))}
-                    </ul>
-                  </SortableContext>
-                </DndContext>
+                <SortableContext items={favoriteIds} strategy={verticalListSortingStrategy}>
+                  <ul
+                    className="flex flex-col gap-1.5 mt-2"
+                    role="list"
+                    aria-label={`Favoritos en ${folder.name}`}
+                  >
+                    {folderFavorites.map((fav) => (
+                      <SortableFavoriteRow
+                        key={fav.id}
+                        fav={fav}
+                        onDelete={handleDeleteFavorite}
+                      />
+                    ))}
+                  </ul>
+                </SortableContext>
               )}
+
+              <FolderInnerDropzone folderPathStr={folderPathStr} />
             </motion.div>
           )}
         </AnimatePresence>

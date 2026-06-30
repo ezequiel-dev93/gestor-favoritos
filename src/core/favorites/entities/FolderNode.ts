@@ -77,3 +77,27 @@ export function reorderChildrenInNode(
   });
 }
 
+/**
+ * Inserta un nodo en una ruta destino.
+ * Si targetPath está vacío, lo inserta en la raíz.
+ */
+export function insertFolderNode(
+  root: FolderNode[],
+  targetPath: string[],
+  nodeToInsert: FolderNode
+): FolderNode[] {
+  if (targetPath.length === 0) {
+    return [...root, nodeToInsert];
+  }
+  const [head, ...rest] = targetPath;
+  return root.map((node) => {
+    if (node.name !== head) return node;
+    if (rest.length === 0) {
+      return { ...node, children: [...(node.children || []), nodeToInsert] };
+    }
+    return {
+      ...node,
+      children: insertFolderNode(node.children || [], rest, nodeToInsert),
+    };
+  });
+}

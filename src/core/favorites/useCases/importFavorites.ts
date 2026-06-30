@@ -2,6 +2,7 @@ import type { FavoriteRepository } from "@/core/favorites/repositories/FavoriteR
 import type { Favorite } from "@/core/favorites/entities/Favorite";
 import type { FolderNode } from "@/core/favorites/entities/FolderNode";
 import type { ExportData } from "@/core/favorites/useCases/exportFavorites";
+import { parseHtmlBookmarks } from "@/core/favorites/useCases/parseHtmlBookmarks";
 
 /** Estrategia de importación */
 export type ImportStrategy = "replace" | "merge";
@@ -60,6 +61,20 @@ export function parseImportFile(json: string): ImportPreview {
   }
 
   return { favorites, folders };
+}
+
+/**
+ * detectAndParseFile — SRP: punto de entrada unificado para importar favoritos.
+ * Detecta automáticamente el formato según la extensión del archivo:
+ * - .html / .htm  → parser Netscape Bookmark File (Chrome, Brave, Firefox, Edge)
+ * - .json         → parser del formato interno de backup
+ */
+export function detectAndParseFile(content: string, filename: string): ImportPreview {
+  const lower = filename.toLowerCase();
+  if (lower.endsWith(".html") || lower.endsWith(".htm")) {
+    return parseHtmlBookmarks(content);
+  }
+  return parseImportFile(content);
 }
 
 /**

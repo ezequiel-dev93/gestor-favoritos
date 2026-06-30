@@ -36,6 +36,10 @@ interface FavoritesState {
   reorderFavoritesInFolder: (folderPathStr: string, reordered: Favorite[]) => Promise<void>;
   /** Reordena sub-carpetas dentro de un nodo padre y persiste */
   reorderChildrenInFolder: (parentPath: string[], newChildren: FolderNode[]) => Promise<void>;
+  /** Mueve un favorito de carpeta */
+  moveFavoriteToFolder: (id: string, newFolderPath: string) => Promise<void>;
+  /** Mueve una carpeta de una ruta a otra en el árbol, actualizando favoritos */
+  moveFolder: (sourcePath: string[], targetPath: string[]) => Promise<void>;
   searchFavorites: (query: string) => Promise<void>;
 }
 
@@ -229,6 +233,49 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     const updated = reorderChildrenInNode(current, parentPath, newChildren);
     await repo.saveFolders(updated);
     set({ folders: updated });
+  },
+
+  moveFavoriteToFolder: async (id, newFolderPath) => {
+    try {
+      const repo = new ChromeStorageRepository();
+      const existing = get().favorites.find((f) => f.id === id);
+      if (!existing) return;
+      const updated = await updateFavorite(id, { ...existing, folder: newFolderPath }, repo);
+      set((state) => ({
+        favorites: state.favorites.map((fav) => (fav.id === id ? updated : fav)),
+      }));
+    } catch (error) {
+      console.error("Error moviendo favorito:", error);
+      throw error;
+    }
+  },
+
+  moveFolder: async (sourcePath, targetPath) => {
+    try {
+      const repo = new ChromeStorageRepository();
+      const { moveFolder } = await import("@/core/favorites/useCases/moveFolder");
+      await moveFolder(sourcePath, targetPath, repo);
+      // Reload folders and favorites to sync UI
+      const folders = await repo.getFolders();
+      const favorites = await repo.getFavorites();
+      
+      // If selected folder was moved or is child of moved folder, deselect or update it.
+      // For simplicity, we can just clear selection if it's affected.
+      const currentSelected = get().selectedFolder;
+      let newSelected = currentSelected;
+      if (currentSelected) {
+        const sourcePathStr = sourcePath.join("/");
+        const currentSelectedStr = currentSelected.join("/");
+        if (currentSelectedStr === sourcePathStr || currentSelectedStr.startsWith(sourcePathStr + "/")) {
+          newSelected = null;
+        }
+      }
+
+      set({ folders, favorites, selectedFolder: newSelected });
+    } catch (error) {
+      console.error("Error moviendo carpeta:", error);
+      throw error;
+    }
   },
 
   searchFavorites: async (query: string) => {
