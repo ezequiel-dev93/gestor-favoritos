@@ -28,11 +28,11 @@ export interface FoldersDndHandlers {
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 }
 
-/**
- * useFoldersDnd — SRP: encapsula toda la logica de drag & drop del grid de carpetas.
- * Maneja sensores, deteccion de colision, y los handlers de inicio/fin de drag.
- * FoldersGrid solo consume este hook sin conocer los detalles de dnd-kit.
- */
+/*
+ - useFoldersDnd — SRP: encapsula toda la logica de drag & drop del grid de carpetas.
+ - Maneja sensores, deteccion de colision, y los handlers de inicio/fin de drag.
+ - FoldersGrid solo consume este hook sin conocer los detalles de dnd-kit.
+*/
 export function useFoldersDnd(): FoldersDndState & FoldersDndHandlers {
   const folders = useFavoritesStore((s) => s.folders);
   const favorites = useFavoritesStore((s) => s.favorites);
@@ -49,11 +49,10 @@ export function useFoldersDnd(): FoldersDndState & FoldersDndHandlers {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  /**
-   * Colision hibrida:
-   * - Drop zones usan pointerWithin: solo activan cuando el cursor esta encima.
-   * - Sortables usan closestCenter como fallback.
-   */
+  /* Colision hibrida:
+     - Drop zones usan pointerWithin: solo activan cuando el cursor esta encima.
+     - Sortables usan closestCenter como fallback.
+  */
   const collisionDetection: CollisionDetection = useCallback((args) => {
     const pointerCollisions = pointerWithin(args);
     const dropZoneCollision = pointerCollisions.find(

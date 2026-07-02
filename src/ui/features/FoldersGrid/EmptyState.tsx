@@ -6,19 +6,19 @@ interface EmptyStateProps {
 }
 
 const ORBIT_DOTS = [
-  { delay: 0,   size: "size-1.5", color: "bg-purple-400", duration: 10 },
-  { delay: 0.4, size: "size-1",   color: "bg-cyan-400",   duration: 13 },
-  { delay: 0.8, size: "size-2",   color: "bg-purple-300", duration: 16 },
-  { delay: 1.2, size: "size-1",   color: "bg-pink-400",   duration: 11 },
-  { delay: 1.6, size: "size-1.5", color: "bg-cyan-300",   duration: 14 },
-  { delay: 2.0, size: "size-1",   color: "bg-purple-500", duration: 9  },
+  { delay: 0, size: "size-1.5", color: "bg-purple-400", duration: 10 },
+  { delay: 0.4, size: "size-1", color: "bg-cyan-400", duration: 13 },
+  { delay: 0.8, size: "size-2", color: "bg-purple-300", duration: 16 },
+  { delay: 1.2, size: "size-1", color: "bg-pink-400", duration: 11 },
+  { delay: 1.6, size: "size-1.5", color: "bg-cyan-300", duration: 14 },
+  { delay: 2.0, size: "size-1", color: "bg-purple-500", duration: 9 },
 ] as const;
 
-/**
- * EmptyState — SRP: renderiza el estado vacio del grid de carpetas.
- * Muestra una ilustracion animada, copy de bienvenida y CTAs para comenzar.
- * No conoce nada de DnD, store ni logica de negocio.
- */
+/*
+ - EmptyState — SRP: renderiza el estado vacio del grid de carpetas.
+ - Muestra una ilustracion animada, copy de bienvenida y CTAs para comenzar.
+ - No conoce nada de DnD, store ni logica de negocio.
+*/
 export function EmptyState({ onCreateFolder }: EmptyStateProps) {
   return (
     <motion.div
@@ -27,7 +27,7 @@ export function EmptyState({ onCreateFolder }: EmptyStateProps) {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="flex flex-col items-center justify-center flex-1 gap-8 select-none h-full py-20"
     >
-      {/* Ilustracion animada */}
+
       <div className="relative flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
@@ -65,7 +65,6 @@ export function EmptyState({ onCreateFolder }: EmptyStateProps) {
         </motion.div>
       </div>
 
-      {/* Copy */}
       <div className="flex flex-col items-center gap-2 text-center max-w-xs pt-8">
         <motion.h2
           initial={{ opacity: 0, y: 8 }}
@@ -86,7 +85,6 @@ export function EmptyState({ onCreateFolder }: EmptyStateProps) {
         </motion.p>
       </div>
 
-      {/* CTAs */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
