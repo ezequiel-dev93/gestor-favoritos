@@ -107,8 +107,6 @@ export function FolderCard({
     ? "bg-zinc-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 flex flex-col gap-2 group"
     : "bg-zinc-100/60 dark:bg-zinc-700/40 rounded-lg border border-zinc-200/60 dark:border-zinc-600/50 p-2.5 flex flex-col gap-1.5 group";
 
-  // Render
-
   return (
     <>
       <motion.article
