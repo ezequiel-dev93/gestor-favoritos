@@ -16,7 +16,7 @@ export function SettingsButton({ onImportDone }: SettingsButtonProps) {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-3">
+      <div className="fixed bottom-12 right-4 z-50 flex flex-col items-center gap-3">
         <SearchInput />
 
         <button
