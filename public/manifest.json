@@ -1,15 +1,17 @@
 {
   "manifest_version": 3,
   "version": "1.0.0",
-  "name": "Gestor de Favoritos",
+  "name": "BookmarkNest - Gestor de Favoritos",
+  "short_name": "BookmarkNest",
   "permissions": ["storage"],
   "background": {
     "service_worker": "background.js"
   },
-  "description": "Extensión visual para gestionar favoritos con sincronización en Chrome.",
+  "description": "Organiza, personaliza y sincroniza tus marcadores de Chrome con una interfaz visual, rápida y elegante.",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
+  "offline_enabled": true,
   "action": {
     "default_icon": {
       "16": "icons/icon16.ico",

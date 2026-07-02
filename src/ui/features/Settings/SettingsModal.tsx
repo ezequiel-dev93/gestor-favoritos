@@ -17,19 +17,19 @@ interface SettingsModalProps {
   onImportDone: () => void;
 }
 
-/**
- * SettingsModal — SRP: único responsable de la interfaz de exportar e importar.
- * Delega toda la lógica a los use cases del dominio.
- */
+/*
+ - SettingsModal — SRP: único responsable de la interfaz de exportar e importar.
+ - Delega toda la lógica a los use cases del dominio.
+*/
 export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProps) {
-  const fileInputRef                      = useRef<HTMLInputElement>(null);
-  const [isExporting, setIsExporting]     = useState(false);
-  const [isImporting, setIsImporting]     = useState(false);
-  const [strategy, setStrategy]           = useState<ImportStrategy>("merge");
-  const [preview, setPreview]             = useState<ImportPreview | null>(null);
-  const [previewError, setPreviewError]   = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [strategy, setStrategy] = useState<ImportStrategy>("merge");
+  const [preview, setPreview] = useState<ImportPreview | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
 
-  // ── Export ─────────────────────────────────────────────────
+  // Export
   const handleExport = async () => {
     setIsExporting(true);
     try {
@@ -43,7 +43,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
     }
   };
 
-  // ── Import: paso 1 — leer y previsualizar el archivo ───────
+  // Import: paso 1 — leer y previsualizar el archivo
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -63,12 +63,12 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
     reader.readAsText(file);
   };
 
-  // ── Import: paso 2 — confirmar e importar ──────────────────
+  // Import: paso 2 — confirmar e importar
   const handleImport = async () => {
     if (!preview) return;
     setIsImporting(true);
     try {
-      const repo   = new ChromeStorageRepository();
+      const repo = new ChromeStorageRepository();
       const result = await importFavorites(preview, strategy, repo);
       notifySuccess(
         `Importación completada: ${result.favoritesImported} favorito(s), ${result.foldersImported} carpeta(s)`
@@ -97,9 +97,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
 
   return (
     <Modal open={open} onClose={handleClose} title="⚙️ Configuración" className="max-w-lg">
-      <div className="flex flex-col gap-6">
-
-        {/* ── Sección: Exportar ───────────────────────────── */}
+      <section className="flex flex-col gap-6">
         <section aria-labelledby="export-heading" className="flex flex-col gap-3">
           <h3
             id="export-heading"
@@ -124,7 +122,6 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
 
         <hr className="border-zinc-200 dark:border-zinc-700" />
 
-        {/* ── Sección: Importar ───────────────────────────── */}
         <section aria-labelledby="import-heading" className="flex flex-col gap-3">
           <h3
             id="import-heading"
@@ -140,7 +137,6 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
             {" "}exportado desde Chrome o Brave para restaurar tus favoritos.
           </p>
 
-          {/* Input de archivo */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => fileInputRef.current?.click()}
@@ -160,17 +156,14 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
             />
           </div>
 
-          {/* Error de archivo */}
           {previewError && (
             <p className="text-sm text-red-500 dark:text-red-400" role="alert">
               ⚠️ {previewError}
             </p>
           )}
 
-          {/* Preview + estrategia */}
           {preview && !previewError && (
             <div className="flex flex-col gap-4 p-3 rounded-lg bg-zinc-50 dark:bg-zinc-700/40 border border-zinc-200 dark:border-zinc-600">
-              {/* Stats del archivo */}
               <div className="flex gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-purple-500">{preview.favorites.length}</p>
@@ -182,7 +175,6 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
                 </div>
               </div>
 
-              {/* Estrategia */}
               <fieldset className="flex flex-col gap-2">
                 <legend className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 mb-1">
                   Estrategia de importación
@@ -217,7 +209,6 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
                 </label>
               </fieldset>
 
-              {/* Botón confirmar */}
               <button
                 onClick={handleImport}
                 disabled={isImporting}
@@ -230,7 +221,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
             </div>
           )}
         </section>
-      </div>
+      </section>
     </Modal>
   );
 }

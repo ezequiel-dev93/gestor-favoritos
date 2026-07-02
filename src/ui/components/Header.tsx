@@ -8,7 +8,7 @@ export function Header() {
     if (titleRef.current) {
       gsap.to(titleRef.current, {
         duration: 2,
-        text: "Gestor De Favoritos",
+        text: "BookMarkNest",
         ease: "power2.out",
         delay: 0.5,
       });
@@ -23,4 +23,3 @@ export function Header() {
     </header>
   );
 }
-     

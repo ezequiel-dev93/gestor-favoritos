@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "sonner";
 import { Header } from "@/ui/components/Header";
 import { Footer } from "@/ui/components/Footer";
-import { SearchInput } from "@/ui/components/Search";
 import { FoldersGrid } from "@/ui/features/FoldersGrid/FoldersGrid";
 import { FavoriteManager } from "@/pages/FavoriteManager";
 import { AddFavoriteModal } from "@/ui/features/AddFavoriteModal/AddFavoriteModal";
@@ -11,11 +10,11 @@ import AddFolderModal from "@/ui/features/AddFolderModal/AddFolderModal";
 import { SettingsButton } from "@/ui/features/Settings/SettingsButton";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 
-/**
- * AppLayout — SRP: composición del layout de pantalla completa.
- * Orquesta las tres secciones: Header, Toolbar y área de contenido principal.
- * No contiene lógica de dominio — esa responsabilidad pertenece a cada sub-componente.
- */
+/*
+ - AppLayout — SRP: composición del layout de pantalla completa.
+ - Orquesta las tres secciones: Header, Toolbar y área de contenido principal.
+ - No contiene lógica de dominio — esa responsabilidad pertenece a cada sub-componente.
+*/
 export function AppLayout() {
   const isSearching = useFavoritesStore((s) => s.isSearching);
   const loadAllFavorites = useFavoritesStore((s) => s.loadAllFavorites);
@@ -60,10 +59,6 @@ export function AppLayout() {
         role="toolbar"
         aria-label="Herramientas"
       >
-        <div className="flex-1 min-w-[180px] max-w-sm">
-          <SearchInput />
-        </div>
-
         <div className="flex items-center gap-2 ml-auto">
           <button
             onClick={() => setShowAddFavorite(true)}

@@ -1,4 +1,4 @@
-import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
+﻿import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,66 +6,93 @@ import { motion, AnimatePresence } from "framer-motion";
 export function SearchInput() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const searchFavorites = useFavoritesStore(s => s.searchFavorites);
+  const searchFavorites = useFavoritesStore((s) => s.searchFavorites);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       searchFavorites(query);
     }, 200);
-
     return () => clearTimeout(delayDebounce);
   }, [query, searchFavorites]);
 
   useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus();
-    }
+    if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
-  return (
-    <article className="relative w-full max-w-md">
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="flex p-2 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
-        >
-          <Search className="text-zinc-500 dark:text-zinc-400" size={20} />
-        </button>
-      )}
+  const handleClose = () => {
+    setIsOpen(false);
+    setQuery("");
+  };
 
+  return (
+    <div className="relative flex items-center justify-end">
+      {/* Input expandible hacia la izquierda */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, width: 0 }}
-            animate={{ opacity: 1, scale: 1, width: "100%" }}
-            exit={{ opacity: 0, scale: 0.95, width: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="w-full overflow-hidden"
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: 200 }}
+            exit={{ opacity: 0, width: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+            className="absolute right-14 overflow-hidden"
           >
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"
+                size={14}
+              />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Escape" && handleClose()}
                 placeholder="Buscar favoritos..."
-                className=" pl-10 pr-10 py-2 rounded-md bg-zinc-200 dark:bg-zinc-700 text-sm placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus:outline-none focus:ring-2"
+                className="w-full pl-8 pr-3 py-2.5 rounded-full bg-zinc-800 dark:bg-zinc-700 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-lg"
               />
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  setQuery("");
-                }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 "
-              >
-                <X size={16} />
-              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </article>
+
+      {/* Boton circular */}
+      <button
+        onClick={() => (isOpen ? handleClose() : setIsOpen(true))}
+        className={[
+          "flex items-center justify-center size-11 rounded-full shadow-lg hover:shadow-xl",
+          "transition-all hover:scale-105 active:scale-95 cursor-pointer",
+          isOpen
+            ? "bg-purple-600 hover:bg-purple-500 text-white"
+            : "bg-zinc-800 dark:bg-zinc-700 hover:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-100",
+        ].join(" ")}
+        aria-label={isOpen ? "Cerrar busqueda" : "Buscar favoritos"}
+        title={isOpen ? "Cerrar" : "Buscar"}
+      >
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.span
+              key="close"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <X size={18} />
+            </motion.span>
+          ) : (
+            <motion.span
+              key="search"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <Search size={18} />
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </button>
+    </div>
   );
 }
