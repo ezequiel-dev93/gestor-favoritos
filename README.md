@@ -10,7 +10,11 @@
 
 ## 🎯 El Problema y la Solución
 
-El gestor nativo de favoritos de Chrome es rígido: múltiples clicks para categorizar, sin búsqueda rápida, sin reorganización visual. **Gestor de Favoritos** reemplaza la nueva pestaña del navegador con una interfaz completa en pantalla entera, donde cada carpeta es una tarjeta visible con sus links al instante.
+Todo nació de una necesidad personal. La barra de favoritos nativa de Chrome siempre me pareció rígida: requería múltiples clicks para categorizar, no tenía una búsqueda rápida y sentía que le faltaba reorganización visual.
+
+Busqué y probé otras extensiones, pero ninguna terminaba de convencerme. Así que decidí sumergirme en la documentación de Chrome y construir exactamente lo que yo quería usar.
+
+El resultado es **BookMarkNest**, una extensión que reemplaza la nueva pestaña del navegador con una interfaz completa en pantalla entera, donde cada carpeta es una tarjeta visible con sus links al instante. Lo creé para mejorar mi propio día a día, pero si alguien más tiene este mismo problema, **¡aquí lo comparto!**
 
 Toda la persistencia se delega a `chrome.storage.sync`, lo que garantiza sincronización automática entre dispositivos sin necesidad de un backend propio ni datos expuestos a terceros.
 
