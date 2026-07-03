@@ -12,6 +12,7 @@ import AddFolderModal from "@/ui/features/AddFolderModal/AddFolderModal";
 
 interface FoldersGridProps {
   onFavoriteAdded: () => void;
+  onImportClick: () => void;
 }
 
 /*
@@ -19,7 +20,7 @@ interface FoldersGridProps {
  - Compone: DnD context (useFoldersDnd), EmptyState, RootDropzone y FolderCards.
  - No contiene logica de negocio ni de drag & drop directamente.
 */
-export function FoldersGrid({ onFavoriteAdded }: FoldersGridProps) {
+export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps) {
   const folders = useFavoritesStore((s) => s.folders);
   const favorites = useFavoritesStore((s) => s.favorites);
   const deleteFolder = useFavoritesStore((s) => s.deleteFolder);
@@ -42,7 +43,7 @@ export function FoldersGrid({ onFavoriteAdded }: FoldersGridProps) {
   if (folders.length === 0) {
     return (
       <>
-        <EmptyState onCreateFolder={() => setShowAddFolder(true)} />
+        <EmptyState onCreateFolder={() => setShowAddFolder(true)} onImportClick={onImportClick} />
         <AddFolderModal
           isOpen={showAddFolder}
           onClose={() => {

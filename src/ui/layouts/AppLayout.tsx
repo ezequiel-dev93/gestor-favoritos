@@ -22,6 +22,7 @@ export function AppLayout() {
 
   const [showAddFavorite, setShowAddFavorite] = useState(false);
   const [showAddFolder, setShowAddFolder] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   // Carga inicial: folders + todos los favoritos para el grid
   useEffect(() => {
@@ -104,7 +105,10 @@ export function AppLayout() {
               transition={{ duration: 0.18 }}
               className="h-full"
             >
-              <FoldersGrid onFavoriteAdded={handleDataRefresh} />
+              <FoldersGrid
+                onFavoriteAdded={handleDataRefresh}
+                onImportClick={() => setShowSettings(true)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -132,7 +136,12 @@ export function AppLayout() {
         }}
       />
 
-      <SettingsButton onImportDone={handleDataRefresh} />
+      <SettingsButton
+        open={showSettings}
+        onOpen={() => setShowSettings(true)}
+        onClose={() => setShowSettings(false)}
+        onImportDone={handleDataRefresh}
+      />
 
     </section>
   );

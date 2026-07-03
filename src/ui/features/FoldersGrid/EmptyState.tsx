@@ -1,8 +1,9 @@
-﻿import { FiFolder, FiFolderPlus, FiUploadCloud } from "react-icons/fi";
+import { FiFolder, FiFolderPlus, FiUploadCloud } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 interface EmptyStateProps {
   onCreateFolder: () => void;
+  onImportClick: () => void;
 }
 
 const ORBIT_DOTS = [
@@ -19,7 +20,7 @@ const ORBIT_DOTS = [
  - Muestra una ilustracion animada, copy de bienvenida y CTAs para comenzar.
  - No conoce nada de DnD, store ni logica de negocio.
 */
-export function EmptyState({ onCreateFolder }: EmptyStateProps) {
+export function EmptyState({ onCreateFolder, onImportClick }: EmptyStateProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -70,7 +71,7 @@ export function EmptyState({ onCreateFolder }: EmptyStateProps) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          className="text-xl font-semibold text-zinc-100 tracking-tight"
+          className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 tracking-tight"
         >
           Tu espacio esta listo
         </motion.h2>
@@ -78,7 +79,7 @@ export function EmptyState({ onCreateFolder }: EmptyStateProps) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.4 }}
-          className="text-sm text-zinc-500 leading-relaxed"
+          className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed"
         >
           Organiza todo lo que guardas en carpetas que tengan sentido.
           Sin caos, sin pestanas perdidas.
@@ -100,10 +101,7 @@ export function EmptyState({ onCreateFolder }: EmptyStateProps) {
         </button>
         <span className="text-xs text-zinc-600">o</span>
         <button
-          onClick={() => {
-            const btn = document.querySelector("[data-settings-import]") as HTMLElement | null;
-            btn?.click();
-          }}
+          onClick={onImportClick}
           className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-700 hover:border-zinc-500 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-all hover:scale-[1.03] active:scale-[0.97] cursor-pointer"
         >
           <FiUploadCloud size={15} />

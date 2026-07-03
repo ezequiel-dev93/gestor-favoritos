@@ -16,7 +16,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className="flex items-center gap-3 text-white">
+    <header className="flex items-center gap-3 text-zinc-800 dark:text-white">
       <img src="/img/LogoTipo.webp" alt="Logo Gestor de Favoritos" className="w-10" />
 
       <h1 ref={titleRef} className="text-2xl sm:text-3xl font-bold tracking-wide"></h1>
