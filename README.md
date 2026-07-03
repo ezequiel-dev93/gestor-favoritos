@@ -1,7 +1,7 @@
 # 🔖 Gestor de Favoritos — Chrome Extension
 
 <div align="center">
-  <img src="public/img/banner.png" alt="Gestor de Favoritos Banner" width="100%" />
+  <img src="public/img/banner-boomarknest.png" alt="Gestor de Favoritos Banner" width="100%" />
 </div>
 
 > **TL;DR:** Extensión de Chrome que reemplaza la nueva pestaña con un gestor visual de favoritos. Construida con Clean Architecture, principios SOLID y foco en UX fluida. Sincronización nativa sin backend, exportación/importación de datos y Drag & Drop incluidos.
