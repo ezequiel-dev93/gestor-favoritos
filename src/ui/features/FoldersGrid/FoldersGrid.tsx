@@ -9,6 +9,7 @@ import { EmptyState } from "@/ui/features/FoldersGrid/EmptyState";
 import { RootDropzone } from "@/ui/features/FoldersGrid/RootDropzone";
 import { FolderDragPreview, FavoriteDragPreview } from "@/ui/features/FoldersGrid/DragOverlays";
 import AddFolderModal from "@/ui/features/AddFolderModal/AddFolderModal";
+import { DndDraggingContext } from "@/ui/features/FoldersGrid/DndDraggingContext";
 
 interface FoldersGridProps {
   onFavoriteAdded: () => void;
@@ -29,16 +30,33 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
   const [showAddFolder, setShowAddFolder] = useState(false);
 
   const {
+    activeDragId,
     activeFav,
     isDraggingFolder,
     activeFolderName,
+    localFolderOrder,
     sensors,
     collisionDetection,
     handleDragStart,
+    handleDragOver,
     handleDragEnd,
   } = useFoldersDnd();
 
-  const folderIds = folders.map((f) => f.name);
+  /*
+   - displayFolders — durante el drag usa el orden local optimista para
+     que el grid responda en tiempo real. Fuera del drag, usa el store.
+  */
+  const displayFolders = localFolderOrder ?? folders;
+
+  /*
+   - isDraggingRootFolder — true solo cuando se arrastra una carpeta raíz
+     (IDs de carpeta raíz no tienen "/", los de subcarpetas sí).
+     Se pasa por contexto para que FolderInnerDropzone se oculte y no
+     interfiera con el reordenamiento sortable del grid.
+  */
+  const isDraggingRootFolder =
+    isDraggingFolder && !!activeDragId && !activeDragId.includes("/");
+  const folderIds = displayFolders.map((f) => f.name);
 
   if (folders.length === 0) {
     return (
@@ -56,11 +74,12 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
   }
 
   return (
-    <>
+    <DndDraggingContext.Provider value={{ isDraggingRootFolder }}>
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetection}
         onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
         <AnimatePresence>
@@ -73,7 +92,7 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
             style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}
             aria-label="Carpetas de favoritos"
           >
-            {folders.map((folder) => (
+            {displayFolders.map((folder) => (
               <FolderCard
                 key={folder.name}
                 folder={folder}
@@ -103,6 +122,6 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
           onFavoriteAdded();
         }}
       />
-    </>
+    </DndDraggingContext.Provider>
   );
 }

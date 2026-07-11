@@ -1,4 +1,4 @@
-﻿import { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   closestCenter,
   PointerSensor,
@@ -7,11 +7,12 @@ import {
   useSensors,
   pointerWithin,
 } from "@dnd-kit/core";
-import type { DragStartEvent, DragEndEvent, CollisionDetection } from "@dnd-kit/core";
+import type { DragStartEvent, DragEndEvent, DragOverEvent, CollisionDetection } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { notifySuccess, notifyError } from "@/core/utils/notify";
 import { findFolderNode } from "@/core/favorites/entities/FolderNode";
+import type { FolderNode } from "@/core/favorites/entities/FolderNode";
 import type { Favorite } from "@/core/favorites/entities/Favorite";
 
 export interface FoldersDndState {
@@ -19,12 +20,15 @@ export interface FoldersDndState {
   activeFav: Favorite | null;
   isDraggingFolder: boolean;
   activeFolderName: string | null;
+  /** Orden local durante el drag (null cuando no hay drag activo). */
+  localFolderOrder: FolderNode[] | null;
 }
 
 export interface FoldersDndHandlers {
   sensors: ReturnType<typeof useSensors>;
   collisionDetection: CollisionDetection;
   handleDragStart: (event: DragStartEvent) => void;
+  handleDragOver: (event: DragOverEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 }
 
@@ -43,6 +47,13 @@ export function useFoldersDnd(): FoldersDndState & FoldersDndHandlers {
   const saveFoldersOrder = useFavoritesStore((s) => s.saveFoldersOrder);
 
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
+
+  /*
+   - localFolderOrder — orden optimista de carpetas raíz durante el drag.
+   - Se inicializa al comenzar el drag y se actualiza en onDragOver.
+   - Se limpia (null) al terminar, volviendo al orden del store.
+  */
+  const [localFolderOrder, setLocalFolderOrder] = useState<FolderNode[] | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -64,10 +75,50 @@ export function useFoldersDnd(): FoldersDndState & FoldersDndHandlers {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveDragId(String(event.active.id));
+    // Inicializar el orden local con el estado actual del store
+    setLocalFolderOrder(folders);
+  };
+
+  /*
+   - handleDragOver — reordenamiento optimista en tiempo real.
+   - Solo actúa cuando se arrastra una carpeta raíz sobre otra carpeta raíz.
+   - Actualiza localFolderOrder con arrayMove para que el grid responda de inmediato.
+  */
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    // Ignorar drop zones especiales y favoritos
+    if (
+      overId.startsWith("drop-inside-") ||
+      overId === "root-dropzone" ||
+      favorites.some((f) => f.id === activeId)
+    ) return;
+
+    const activePath = activeId.split("/");
+    const overPath = overId.split("/");
+
+    // Solo reordenar carpetas raíz (IDs de un solo segmento)
+    if (activePath.length !== 1 || overPath.length !== 1) return;
+
+    setLocalFolderOrder((current) => {
+      const order = current ?? folders;
+      const oldIdx = order.findIndex((f) => f.name === activePath[0]);
+      const newIdx = order.findIndex((f) => f.name === overPath[0]);
+      if (oldIdx === -1 || newIdx === -1 || oldIdx === newIdx) return current;
+      return arrayMove(order, oldIdx, newIdx);
+    });
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
+    // Capturar el orden local antes de limpiarlo
+    const currentLocalOrder = localFolderOrder;
     setActiveDragId(null);
+    setLocalFolderOrder(null);
+
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -133,9 +184,10 @@ export function useFoldersDnd(): FoldersDndState & FoldersDndHandlers {
     if (activeParentStr !== overParentStr) return;
 
     if (activeParentStr === "") {
-      const oldIdx = folders.findIndex((f) => f.name === activePath[0]);
-      const newIdx = folders.findIndex((f) => f.name === overPath[0]);
-      await saveFoldersOrder(arrayMove(folders, oldIdx, newIdx));
+      // Carpetas raíz: persistir el orden local acumulado durante onDragOver
+      if (currentLocalOrder) {
+        await saveFoldersOrder(currentLocalOrder);
+      }
     } else {
       const parentPath = overPath.slice(0, -1);
       const parent = findFolderNode(folders, parentPath);
@@ -161,9 +213,11 @@ export function useFoldersDnd(): FoldersDndState & FoldersDndHandlers {
     activeFav,
     isDraggingFolder,
     activeFolderName,
+    localFolderOrder,
     sensors,
     collisionDetection,
     handleDragStart,
+    handleDragOver,
     handleDragEnd,
   };
 }
