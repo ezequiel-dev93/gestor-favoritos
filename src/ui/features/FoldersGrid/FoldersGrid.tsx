@@ -89,7 +89,7 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
         <SortableContext items={folderIds} strategy={rectSortingStrategy}>
           <div
             className="grid gap-4 content-start items-start"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
             aria-label="Carpetas de favoritos"
           >
             {displayFolders.map((folder) => (

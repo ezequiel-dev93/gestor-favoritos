@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiFolder } from "react-icons/fi";
 import { RxDragHandleDots2 } from "react-icons/rx";
+import { LuChevronDown } from "react-icons/lu";
 import {
   SortableContext,
   useSortable,
@@ -48,7 +49,8 @@ export function FolderCard({
   const hasChildren = (folder.children?.length ?? 0) > 0;
   const isEmpty = folderFavorites.length === 0 && !hasChildren;
 
-  const [isOpen, setIsOpen] = useState(isRootFolder);
+  // Todas las carpetas (incluyendo raíz) arrancan colapsadas
+  const [isOpen, setIsOpen] = useState(false);
   const [isEditingFolder, setIsEditingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState(folder.name);
   const [showAddFavorite, setShowAddFavorite] = useState(false);
@@ -134,28 +136,46 @@ export function FolderCard({
               className="flex-1 text-sm font-bold bg-transparent border-b border-purple-500 focus:outline-none text-zinc-800 dark:text-zinc-100 pb-0.5"
               aria-label="Editar nombre de carpeta"
             />
-          ) : !isRootFolder ? (
+          ) : (
+            // Carpeta raíz o subcarpeta: ambas son clickeables para toggle
             <button
               onClick={() => setIsOpen((prev) => !prev)}
               className="flex items-center gap-1.5 flex-1 min-w-0 text-left"
               aria-expanded={isOpen}
               aria-label={isOpen ? `Colapsar ${folder.name}` : `Expandir ${folder.name}`}
             >
-              <FiFolder
-                size={13}
-                className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-zinc-400"}`}
-              />
-              <h3 className="text-sm text-zinc-700 dark:text-zinc-200 truncate select-none">
-                {folder.name}
-              </h3>
+              {isRootFolder ? (
+                <FiFolder
+                  size={15}
+                  className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-purple-400"}`}
+                />
+              ) : (
+                <FiFolder
+                  size={13}
+                  className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-zinc-400"}`}
+                />
+              )}
+
+              {isRootFolder ? (
+                <h2 className="text-sm font-bold text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
+                  {folder.name}
+                </h2>
+              ) : (
+                <h3 className="text-sm text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
+                  {folder.name}
+                </h3>
+              )}
+
+              {isRootFolder && (
+                <motion.span
+                  animate={{ rotate: isOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="shrink-0 text-zinc-400"
+                >
+                  <LuChevronDown size={14} />
+                </motion.span>
+              )}
             </button>
-          ) : (
-            <div className="flex items-center gap-1.5 flex-1 min-w-0">
-              <FiFolder size={14} className="shrink-0 text-purple-500" />
-              <h2 className="text-sm font-bold text-zinc-700 dark:text-zinc-200 truncate select-none">
-                {folder.name}
-              </h2>
-            </div>
           )}
 
           {!isEditingFolder && (
