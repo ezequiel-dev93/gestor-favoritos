@@ -40,12 +40,12 @@ export function FolderMenu({
         aria-label="Opciones de carpeta"
         aria-expanded={showMenu}
         aria-haspopup="menu"
-        className={`min-w-[24px] min-h-[24px] flex items-center justify-center transition-colors rounded-md focus-visible:ring-2 focus-visible:ring-purple-500 ${showMenu
+        className={`p-0.5 flex items-center justify-center transition-colors rounded focus-visible:ring-2 focus-visible:ring-purple-500 ${showMenu
             ? "bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-100"
             : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50"
           }`}
       >
-        <FiMoreVertical size={14} aria-hidden="true" />
+        <FiMoreVertical size={13} aria-hidden="true" />
       </button>
 
       <AnimatePresence>

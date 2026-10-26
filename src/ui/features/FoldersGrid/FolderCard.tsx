@@ -108,8 +108,8 @@ export function FolderCard({
   };
 
   const articleClass = isRootFolder
-    ? "bg-zinc-50 dark:bg-zinc-800/60 rounded-lg border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 flex flex-col gap-1 group"
-    : "bg-zinc-100/60 dark:bg-zinc-700/40 rounded-md border border-zinc-200/60 dark:border-zinc-600/50 px-2.5 py-1 flex flex-col gap-1 group";
+    ? "bg-zinc-50 dark:bg-zinc-800/60 rounded-md border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 flex flex-col gap-0.5 group"
+    : "bg-zinc-100/60 dark:bg-zinc-700/40 rounded border border-zinc-200/60 dark:border-zinc-600/50 px-2 py-0.5 flex flex-col gap-0.5 group";
 
   return (
     <>
@@ -121,7 +121,7 @@ export function FolderCard({
         transition={{ duration: 0.18 }}
         className={articleClass}
       >
-        <section className="flex items-center gap-1.5 min-h-[20px]">
+        <section className="flex items-center gap-1">
           {isEditingFolder ? (
             <input
               autoFocus
@@ -148,31 +148,31 @@ export function FolderCard({
             >
               {isRootFolder ? (
                 <FiFolder
-                  size={15}
+                  size={14}
                   aria-hidden="true"
                   className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-purple-400"}`}
                 />
               ) : (
                 <FiFolder
-                  size={13}
+                  size={12}
                   aria-hidden="true"
                   className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-zinc-400"}`}
                 />
               )}
 
               {isRootFolder ? (
-                <h2 className="text-sm font-bold text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
+                <h2 className="text-[13px] leading-tight font-semibold text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
                   {folder.name}
                 </h2>
               ) : (
-                <h3 className="text-sm text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
+                <h3 className="text-xs leading-tight text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
                   {folder.name}
                 </h3>
               )}
 
               {totalDirectItems > 0 && (
                 <span
-                  className="text-[11px] font-medium px-1.5 py-0.2 rounded-full bg-zinc-200/80 dark:bg-zinc-700/70 text-zinc-600 dark:text-zinc-300 shrink-0 tabular-nums"
+                  className="text-[10px] leading-none font-medium px-1.5 py-0.5 rounded-full bg-zinc-200/80 dark:bg-zinc-700/70 text-zinc-600 dark:text-zinc-300 shrink-0 tabular-nums"
                   title={`${folderFavorites.length} favorito(s)${childrenCount > 0 ? `, ${childrenCount} subcarpeta(s)` : ""}`}
                 >
                   {totalDirectItems}
@@ -185,7 +185,7 @@ export function FolderCard({
                 className="shrink-0 text-zinc-400"
                 aria-hidden="true"
               >
-                <LuChevronDown size={isRootFolder ? 14 : 12} />
+                <LuChevronDown size={isRootFolder ? 13 : 11} />
               </motion.span>
             </button>
           )}
@@ -200,9 +200,9 @@ export function FolderCard({
                 {...attributes}
                 aria-label={`Arrastrar carpeta ${folder.name} para reordenar o mover`}
                 title="Arrastrar"
-                className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing transition-colors focus-visible:ring-2 focus-visible:ring-purple-500"
+                className="p-0.5 flex items-center justify-center rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing transition-colors focus-visible:ring-2 focus-visible:ring-purple-500"
               >
-                <RxDragHandleDots2 size={14} aria-hidden="true" />
+                <RxDragHandleDots2 size={13} aria-hidden="true" />
               </button>
 
               <FolderMenu
