@@ -70,11 +70,11 @@ export function FavoriteRow({ fav, onDelete }: FavoriteRowProps) {
 
       <button
         {...listeners}
-        aria-label="Arrastrar favorito"
+        aria-label={`Arrastrar favorito ${fav.title}`}
         title="Arrastrar para reordenar"
-        className="p-0.5 text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400 cursor-grab active:cursor-grabbing opacity-0 group-hover/fav:opacity-100 transition-opacity shrink-0"
+        className="min-w-[20px] min-h-[20px] flex items-center justify-center rounded text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-grab active:cursor-grabbing opacity-0 group-hover/fav:opacity-100 group-focus-within/fav:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0"
       >
-        <RxDragHandleDots2 size={11} />
+        <RxDragHandleDots2 size={12} aria-hidden="true" />
       </button>
 
       <img
@@ -103,7 +103,7 @@ export function FavoriteRow({ fav, onDelete }: FavoriteRowProps) {
             href={fav.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-zinc-700 dark:text-zinc-300 hover:text-purple-500 dark:hover:text-purple-400 truncate flex-1 transition-colors"
+            className="text-sm text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 truncate flex-1 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
             title={fav.url}
             aria-label={`Abrir ${fav.title}`}
           >
@@ -116,16 +116,17 @@ export function FavoriteRow({ fav, onDelete }: FavoriteRowProps) {
             }}
             aria-label={`Editar ${fav.title}`}
             title="Editar nombre"
-            className="p-0.5 text-zinc-300 hover:text-blue-500 opacity-0 group-hover/fav:opacity-100 transition-opacity shrink-0"
+            className="min-w-[22px] min-h-[22px] flex items-center justify-center rounded text-zinc-400 hover:text-blue-500 opacity-0 group-hover/fav:opacity-100 group-focus-within/fav:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0"
           >
-            <FiEdit3 size={11} />
+            <FiEdit3 size={12} aria-hidden="true" />
           </button>
           <button
             onClick={() => onDelete(fav.id, fav.title)}
             aria-label={`Eliminar ${fav.title}`}
-            className="p-0.5 text-zinc-300 hover:text-red-500 opacity-0 group-hover/fav:opacity-100 transition-opacity shrink-0"
+            title="Eliminar favorito"
+            className="min-w-[22px] min-h-[22px] flex items-center justify-center rounded text-zinc-400 hover:text-red-500 opacity-0 group-hover/fav:opacity-100 group-focus-within/fav:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0"
           >
-            <FiX size={11} />
+            <FiX size={12} aria-hidden="true" />
           </button>
         </>
       )}

@@ -46,7 +46,9 @@ export function FolderCard({
   const currentPath = [...path, folder.name];
   const folderPathStr = currentPath.join("/");
   const folderFavorites = favorites.filter((f) => f.folder === folderPathStr);
-  const hasChildren = (folder.children?.length ?? 0) > 0;
+  const childrenCount = folder.children?.length ?? 0;
+  const hasChildren = childrenCount > 0;
+  const totalDirectItems = folderFavorites.length + childrenCount;
   const isEmpty = folderFavorites.length === 0 && !hasChildren;
 
   // Todas las carpetas (incluyendo raíz) arrancan colapsadas
@@ -106,8 +108,8 @@ export function FolderCard({
   };
 
   const articleClass = isRootFolder
-    ? "bg-zinc-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 flex flex-col gap-2 group"
-    : "bg-zinc-100/60 dark:bg-zinc-700/40 rounded-lg border border-zinc-200/60 dark:border-zinc-600/50 p-2.5 flex flex-col gap-1.5 group";
+    ? "bg-zinc-50 dark:bg-zinc-800/60 rounded-lg border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 flex flex-col gap-1 group"
+    : "bg-zinc-100/60 dark:bg-zinc-700/40 rounded-md border border-zinc-200/60 dark:border-zinc-600/50 px-2.5 py-1 flex flex-col gap-1 group";
 
   return (
     <>
@@ -119,7 +121,7 @@ export function FolderCard({
         transition={{ duration: 0.18 }}
         className={articleClass}
       >
-        <section className="flex items-center gap-2 min-h-[24px]">
+        <section className="flex items-center gap-1.5 min-h-[20px]">
           {isEditingFolder ? (
             <input
               autoFocus
@@ -140,18 +142,20 @@ export function FolderCard({
             // Carpeta raíz o subcarpeta: ambas son clickeables para toggle
             <button
               onClick={() => setIsOpen((prev) => !prev)}
-              className="flex items-center gap-1.5 flex-1 min-w-0 text-left"
+              className="flex items-center gap-1.5 flex-1 min-w-0 text-left rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
               aria-expanded={isOpen}
-              aria-label={isOpen ? `Colapsar ${folder.name}` : `Expandir ${folder.name}`}
+              aria-label={`${isOpen ? "Colapsar" : "Expandir"} carpeta ${folder.name} (${folderFavorites.length} favoritos)`}
             >
               {isRootFolder ? (
                 <FiFolder
                   size={15}
+                  aria-hidden="true"
                   className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-purple-400"}`}
                 />
               ) : (
                 <FiFolder
                   size={13}
+                  aria-hidden="true"
                   className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-zinc-400"}`}
                 />
               )}
@@ -166,31 +170,39 @@ export function FolderCard({
                 </h3>
               )}
 
-              {isRootFolder && (
-                <motion.span
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="shrink-0 text-zinc-400"
+              {totalDirectItems > 0 && (
+                <span
+                  className="text-[11px] font-medium px-1.5 py-0.2 rounded-full bg-zinc-200/80 dark:bg-zinc-700/70 text-zinc-600 dark:text-zinc-300 shrink-0 tabular-nums"
+                  title={`${folderFavorites.length} favorito(s)${childrenCount > 0 ? `, ${childrenCount} subcarpeta(s)` : ""}`}
                 >
-                  <LuChevronDown size={14} />
-                </motion.span>
+                  {totalDirectItems}
+                </span>
               )}
+
+              <motion.span
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="shrink-0 text-zinc-400"
+                aria-hidden="true"
+              >
+                <LuChevronDown size={isRootFolder ? 14 : 12} />
+              </motion.span>
             </button>
           )}
 
           {!isEditingFolder && (
             <div
-              className={`flex items-center gap-1 transition-opacity ml-auto shrink-0 ${showMenu ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              className={`flex items-center gap-0.5 transition-opacity ml-auto shrink-0 ${showMenu ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-within:opacity-100"
                 }`}
             >
               <button
                 {...dragListeners}
                 {...attributes}
-                aria-label="Arrastrar para reordenar o mover"
+                aria-label={`Arrastrar carpeta ${folder.name} para reordenar o mover`}
                 title="Arrastrar"
-                className="p-1.5 text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-grab active:cursor-grabbing transition-colors"
+                className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing transition-colors focus-visible:ring-2 focus-visible:ring-purple-500"
               >
-                <RxDragHandleDots2 size={15} />
+                <RxDragHandleDots2 size={14} aria-hidden="true" />
               </button>
 
               <FolderMenu
@@ -222,15 +234,15 @@ export function FolderCard({
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
               style={{ overflow: "hidden" }}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-1"
             >
               {isEmpty && (
-                <p className="text-xs text-zinc-400 italic mt-2">Sin favoritos aun</p>
+                <p className="text-xs text-zinc-400 italic mt-1">Sin favoritos aun</p>
               )}
 
               {hasChildren && (
                 <SortableContext items={childrenIds} strategy={verticalListSortingStrategy}>
-                  <div className="flex flex-col gap-1.5 mt-2">
+                  <div className="flex flex-col gap-1 mt-1">
                     {folder.children!.map((child) => (
                       <FolderCard
                         key={[...currentPath, child.name].join("/")}
@@ -249,7 +261,7 @@ export function FolderCard({
               {folderFavorites.length > 0 && (
                 <SortableContext items={favoriteIds} strategy={verticalListSortingStrategy}>
                   <ul
-                    className="flex flex-col gap-1.5 mt-2"
+                    className="flex flex-col gap-1 mt-1"
                     role="list"
                     aria-label={`Favoritos en ${folder.name}`}
                   >

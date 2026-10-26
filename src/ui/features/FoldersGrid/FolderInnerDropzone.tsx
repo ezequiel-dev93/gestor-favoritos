@@ -13,21 +13,21 @@ interface FolderInnerDropzoneProps {
  - con el reordenamiento sortable del grid.
 */
 export function FolderInnerDropzone({ folderPathStr }: FolderInnerDropzoneProps) {
-  const { isDraggingRootFolder } = useDndDraggingContext();
+  const { isDragging, isDraggingRootFolder } = useDndDraggingContext();
   const { isOver, setNodeRef } = useDroppable({ id: `drop-inside-${folderPathStr}` });
 
-  // Mientras se arrastra una carpeta raíz, esta zona bloquearía el reordenamiento
-  if (isDraggingRootFolder) return null;
+  // Solo mostrar la zona de drop cuando hay un arrastre activo (y no es carpeta raíz)
+  if (!isDragging || isDraggingRootFolder) return null;
 
   return (
     <div
       ref={setNodeRef}
-      className={`mt-2 p-3 border-2 border-dashed rounded-lg text-center transition-colors ${isOver
-          ? "border-purple-500 bg-purple-500/10 text-purple-600"
-          : "border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-400"
+      className={`mt-1 px-2 py-1 border border-dashed rounded-md text-center transition-colors ${isOver
+          ? "border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400"
+          : "border-zinc-300/80 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400"
         }`}
     >
-      <span className="text-xs font-medium">Soltar aqui para mover adentro</span>
+      <span className="text-[11px] font-medium">Soltar aquí para mover adentro</span>
     </div>
   );
 }

@@ -6,10 +6,12 @@ import { createContext, useContext } from "react";
  - que conflictuarían con el reordenamiento de carpetas raíz.
 */
 interface DndDraggingContextValue {
+  isDragging: boolean;
   isDraggingRootFolder: boolean;
 }
 
 export const DndDraggingContext = createContext<DndDraggingContextValue>({
+  isDragging: false,
   isDraggingRootFolder: false,
 });
 

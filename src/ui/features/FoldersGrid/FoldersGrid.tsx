@@ -54,6 +54,7 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
      Se pasa por contexto para que FolderInnerDropzone se oculte y no
      interfiera con el reordenamiento sortable del grid.
   */
+  const isDragging = !!activeDragId;
   const isDraggingRootFolder =
     isDraggingFolder && !!activeDragId && !activeDragId.includes("/");
   const folderIds = displayFolders.map((f) => f.name);
@@ -74,7 +75,7 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
   }
 
   return (
-    <DndDraggingContext.Provider value={{ isDraggingRootFolder }}>
+    <DndDraggingContext.Provider value={{ isDragging, isDraggingRootFolder }}>
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetection}
@@ -88,8 +89,8 @@ export function FoldersGrid({ onFavoriteAdded, onImportClick }: FoldersGridProps
 
         <SortableContext items={folderIds} strategy={rectSortingStrategy}>
           <div
-            className="grid gap-4 content-start items-start"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
+            className="grid gap-2.5 content-start items-start"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
             aria-label="Carpetas de favoritos"
           >
             {displayFolders.map((folder) => (

@@ -49,37 +49,35 @@ export function AppLayout() {
       />
 
       <header
-        className="flex items-center px-8 py-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0"
-        aria-label="Cabecera de la aplicación"
+        className="flex items-center justify-between gap-4 px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 shrink-0 flex-wrap"
+        aria-label="Cabecera y herramientas de la aplicación"
       >
         <Header />
-      </header>
 
-      <article
-        className="flex items-center gap-3 px-8 py-3 border-b border-zinc-200 dark:border-zinc-800 shrink-0 flex-wrap"
-        role="toolbar"
-        aria-label="Herramientas"
-      >
-        <div className="flex items-center gap-2 ml-auto">
+        <div
+          className="flex items-center gap-2 ml-auto"
+          role="toolbar"
+          aria-label="Acciones rápidas"
+        >
           <button
             onClick={() => setShowAddFavorite(true)}
-            className="px-3 py-1.5 text-sm bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:brightness-110 text-white font-medium rounded-lg cursor-pointer transition-all"
+            className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:brightness-110 text-white font-medium rounded-lg cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-purple-400"
             aria-label="Agregar un nuevo favorito"
           >
             + Agregar Favorito
           </button>
           <button
             onClick={() => setShowAddFolder(true)}
-            className="px-3 py-1.5 text-sm bg-gradient-to-r from-cyan-700 via-cyan-600 to-cyan-500 hover:brightness-110 text-white font-medium rounded-lg cursor-pointer transition-all"
+            className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-cyan-700 via-cyan-600 to-cyan-500 hover:brightness-110 text-white font-medium rounded-lg cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-cyan-400"
             aria-label="Crear nueva carpeta"
           >
             + Nueva Carpeta
           </button>
         </div>
-      </article>
+      </header>
 
       <main
-        className="flex-1 overflow-y-auto px-8 py-6"
+        className="flex-1 overflow-y-auto px-6 py-4"
         aria-label="Contenido principal"
       >
         <AnimatePresence mode="wait">

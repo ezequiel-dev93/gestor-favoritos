@@ -80,7 +80,7 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
                 placeholder="Ejemplo: Mis documentos"
                 value={folderName}
                 onChange={(e) => setFolderName(e.target.value)}
-                className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-transparent text-zinc-900 dark:text-white"
+                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 required
                 aria-required="true"
                 disabled={isLoading}
@@ -106,7 +106,7 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
                     );
                   }
                 }}
-                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-transparent text-zinc-900 dark:text-white"
+                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 aria-label="Seleccionar carpeta contenedora"
                 disabled={isLoading}
               >
@@ -125,7 +125,7 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-white rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-600 cursor-pointer"
+              className="px-4 py-2 text-sm bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-white rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-600 cursor-pointer transition-colors"
               aria-label="Cancelar creación de carpeta"
               disabled={isLoading}
             >
@@ -135,7 +135,7 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-purple-600 cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md cursor-pointer disabled:opacity-50 transition-colors"
               aria-label={isLoading ? "Creando carpeta..." : "Crear nueva carpeta"}
             >
               {isLoading ? "Creando..." : "Crear Carpeta"}

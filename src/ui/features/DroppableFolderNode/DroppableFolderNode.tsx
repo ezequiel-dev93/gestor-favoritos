@@ -75,7 +75,7 @@ const FolderNodeWrapper: React.FC<FolderNodeWrapperProps> = ({
   });
 
   return (
-    <li className="list-none mb-4">
+    <li className="list-none mb-1">
       <FolderNodeItem {...folderProps} onUpdateName={updateFolderName} />
 
       {folderProps.isOpen && folderProps.hasChildren && (

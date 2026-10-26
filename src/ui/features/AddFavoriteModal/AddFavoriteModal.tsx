@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddFavoriteForm from "@/ui/features/AddFavoriteForm/AddFavoriteForm";
 import { Modal } from "@/ui/components/Modal";
 import FolderExplorerModal from "@/ui/features/FolderExplorerModal/FolderExplorerModal";
@@ -23,21 +23,38 @@ export const AddFavoriteModal: React.FC<AddFavoriteModalProps> = ({
   const [folderExplorerOpen, setFolderExplorerOpen] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState<string[] | null>(folder || null);
 
+  useEffect(() => {
+    if (open) {
+      setSelectedFolder(folder || null);
+    }
+  }, [open, folder]);
+
   const handleSelectFolder = (folderPath: string[]) => {
     setSelectedFolder(folderPath);
     setFolderExplorerOpen(false);
-  }
+  };
 
   return (
     <>
       <Modal open={open} onClose={onClose} title="Guardar favorito">
-        <div className="flex flex-col gap-4">
-          <button
-            onClick={() => setFolderExplorerOpen(true)}
-            className="text-sm px-2.5 py-0.5 self-end bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-center me-2 mb-2 cursor-pointer"
-          >
-            Seleccionar carpeta
-          </button>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-2 px-4 pt-1">
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+              Carpeta:{" "}
+              <strong className="text-zinc-800 dark:text-zinc-200">
+                {selectedFolder && selectedFolder.length > 0
+                  ? selectedFolder.join(" / ")
+                  : "Ninguna seleccionada"}
+              </strong>
+            </span>
+            <button
+              type="button"
+              onClick={() => setFolderExplorerOpen(true)}
+              className="text-xs px-3 py-1.5 shrink-0 bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:brightness-110 text-white focus:ring-2 focus:outline-none focus:ring-purple-400 font-medium rounded-lg text-center cursor-pointer transition-all"
+            >
+              {selectedFolder ? "Cambiar carpeta" : "Seleccionar carpeta"}
+            </button>
+          </div>
 
           <AddFavoriteForm
             url={url}

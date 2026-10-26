@@ -1,4 +1,4 @@
-﻿import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
+import { useFavoritesStore } from "@/ui/hooks/useFavoritesStore";
 import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,15 +41,17 @@ export function SearchInput() {
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"
                 size={14}
+                aria-hidden="true"
               />
               <input
                 ref={inputRef}
-                type="text"
+                type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Escape" && handleClose()}
                 placeholder="Buscar favoritos..."
-                className="w-full pl-8 pr-3 py-2.5 rounded-full bg-zinc-800 dark:bg-zinc-700 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-lg"
+                aria-label="Buscar favoritos"
+                className="w-full pl-8 pr-3 py-2.5 rounded-full bg-zinc-800 dark:bg-zinc-700 text-sm text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-lg"
               />
             </div>
           </motion.div>

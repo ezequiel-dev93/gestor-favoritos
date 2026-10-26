@@ -45,7 +45,7 @@ export function Footer() {
           href={AUTHOR_URL}
           onClick={handleAuthorClick}
           rel="noopener noreferrer"
-          className="text-gray-200 hover:text-purple-500 underline font-medium transition-colors duration-200 cursor-pointer"
+          className="text-zinc-700 dark:text-zinc-200 hover:text-purple-600 dark:hover:text-purple-400 underline font-medium transition-colors duration-200 cursor-pointer rounded focus-visible:ring-2 focus-visible:ring-purple-500"
           aria-label="Visitar el sitio web de Ezequiel Suárez"
         >
           Ezequiel Suárez

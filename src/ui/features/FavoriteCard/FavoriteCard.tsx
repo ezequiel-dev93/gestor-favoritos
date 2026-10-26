@@ -13,8 +13,8 @@ interface FavoriteCardProps {
 export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(favorite.title);
-  const updateFavoriteTitle = useFavoritesStore(s => s.updateFavoriteTitle);
-  const deleteFavorite = useFavoritesStore(s => s.deleteFavorite);
+  const updateFavoriteTitle = useFavoritesStore((s) => s.updateFavoriteTitle);
+  const deleteFavorite = useFavoritesStore((s) => s.deleteFavorite);
 
   const handleEdit = () => {
     if (newTitle.trim() === "") {
@@ -42,31 +42,31 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
 
   return (
     <section
-      className="bg-white dark:bg-zinc-800 rounded-lg p-0.5 shadow transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-blue-400 flex items-center gap-3"
+      className="bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 shadow-sm transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-purple-500 flex items-center gap-2.5"
     >
-
       <button
         {...dragHandleProps}
-        className="cursor-grab active:cursor-grabbing p-1 text-zinc-400 hover:text-zinc-600"
-        aria-label="Arrastrar favorito"
+        className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded cursor-grab active:cursor-grabbing text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+        aria-label={`Arrastrar favorito ${favorite.title}`}
       >
-        <FiMove />
+        <FiMove aria-hidden="true" />
       </button>
 
-      <picture>
+      <picture className="shrink-0">
         <img
           src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(favorite.url)}`}
-          alt="favicon"
-          className="size-5 rounded"
+          alt=""
+          aria-hidden="true"
+          className="size-4 rounded-sm"
         />
       </picture>
 
-      <section className="flex-1">
+      <section className="flex-1 min-w-0">
         {isEditing ? (
           <article className="flex items-center gap-2">
             <input
               type="text"
-              className="w-full rounded border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               onKeyDown={(e) => {
@@ -81,52 +81,47 @@ export function FavoriteCard({ favorite, dragHandleProps }: FavoriteCardProps) {
             />
             <button
               onClick={handleEdit}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-purple-600 dark:text-purple-400 hover:underline px-2 py-1"
               aria-label="Guardar título"
             >
               Guardar
             </button>
           </article>
         ) : (
-          <article className="flex items-center justify-between">
+          <article className="flex items-center justify-between gap-2">
             <a
               href={favorite.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-white hover:underline flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+              className="text-sm text-zinc-800 dark:text-zinc-100 hover:text-purple-600 dark:hover:text-purple-400 hover:underline truncate flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded"
               aria-label={`Abrir ${favorite.title}`}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") window.open(favorite.url, "_blank", "noopener,noreferrer");
-              }}
-              tabIndex={0}
-              role="link"
             >
               {favorite.title}
             </a>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 shrink-0">
               <button
-                onClick={e => {
+                onClick={(e) => {
                   e.stopPropagation();
                   setIsEditing(true);
                 }}
                 title="Editar título"
-                aria-label="Editar título"
-                className="ml-2 cursor-pointer"
+                aria-label={`Editar título de ${favorite.title}`}
+                className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded text-zinc-400 hover:text-blue-500 cursor-pointer"
               >
-                <FiEdit3 className="text-zinc-400 hover:text-blue-500" />
+                <FiEdit3 aria-hidden="true" />
               </button>
 
               <button
-                onClick={e => {
+                onClick={(e) => {
                   e.stopPropagation();
                   handleDelete();
                 }}
-                className="hover:text-red-600 cursor-pointer"
+                className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded text-zinc-400 hover:text-red-500 cursor-pointer"
                 title="Eliminar favorito"
-                aria-label="Eliminar favorito"
+                aria-label={`Eliminar favorito ${favorite.title}`}
               >
-                <TfiTrash />
+                <TfiTrash aria-hidden="true" />
               </button>
             </div>
           </article>

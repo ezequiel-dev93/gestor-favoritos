@@ -64,78 +64,91 @@ export const FolderNodeItem: React.FC<FolderNodeItemProps> = ({
 
   return (
     <article
-      className={`flex items-center justify-between px-2 py-1 cursor-pointer ${
-        isSelected ? "bg-blue-100 dark:bg-gray-500 px-2 rounded-md" : ""
+      className={`flex items-center justify-between px-2 py-1 rounded-md transition-colors ${
+        isSelected
+          ? "bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-100 font-medium"
+          : "hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
       }`}
-      style={{ paddingLeft: `${level * 1.5}rem` }}
+      style={{ paddingLeft: `${level * 1.25 + 0.5}rem` }}
     >
-      <div className="flex items-center gap-1 flex-1" onClick={isEditing ? undefined : handleToggle}>
-        {hasChildren && !isEditing && (
-          <FiChevronRight
-            className={`transition-transform ${
-              isOpen ? "rotate-90" : ""
-            }`}
+      {isEditing ? (
+        <div className="flex items-center gap-1.5 flex-1">
+          <FcOpenedFolder aria-hidden="true" className="shrink-0" />
+          <input
+            type="text"
+            className="flex-1 rounded border border-zinc-300 dark:border-zinc-700 px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleEdit();
+              if (e.key === "Escape") handleCancel();
+            }}
+            onClick={(e) => e.stopPropagation()}
+            disabled={isLoading}
+            autoFocus
+            aria-label="Editar nombre de carpeta"
           />
-        )}
-        {!isEditing && <FcOpenedFolder />}
-
-        {isEditing ? (
-          <div className="flex items-center gap-1 flex-1">
-            <FcOpenedFolder />
-            <input
-              type="text"
-              className="flex-1 rounded border border-zinc-300 dark:border-zinc-700 px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-zinc-800"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleEdit();
-                if (e.key === "Escape") handleCancel();
-              }}
-              onClick={(e) => e.stopPropagation()}
-              disabled={isLoading}
-              autoFocus
-              aria-label="Editar nombre de carpeta"
-            />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEdit();
-              }}
-              className="text-xs text-blue-600 hover:underline px-1"
-              disabled={isLoading}
-              aria-label="Guardar nombre"
-            >
-              Guardar
-            </button>
-          </div>
-        ) : (
-          <span className="flex-1">{node.name}</span>
-        )}
-      </div>
-
-      {!isEditing && (
-        <div className="flex items-center gap-1">
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setIsEditing(true);
+              handleEdit();
             }}
-            aria-label={`Editar carpeta ${node.name}`}
-            className="text-zinc-400 hover:text-blue-500 p-1"
-            title="Renombrar carpeta"
+            className="text-xs text-purple-600 dark:text-purple-400 hover:underline px-1.5 py-0.5"
+            disabled={isLoading}
+            aria-label="Guardar nombre"
           >
-            <FiEdit3 size={14} />
+            Guardar
           </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={handleToggle}
+          aria-pressed={isSelected}
+          aria-expanded={hasChildren ? isOpen : undefined}
+          className="flex items-center gap-1.5 flex-1 text-left text-sm min-w-0 py-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 cursor-pointer"
+        >
+          {hasChildren && (
+            <FiChevronRight
+              aria-hidden="true"
+              className={`shrink-0 transition-transform ${
+                isOpen ? "rotate-90" : ""
+              }`}
+            />
+          )}
+          <FcOpenedFolder aria-hidden="true" className="shrink-0" />
+          <span className="flex-1 truncate">{node.name}</span>
+        </button>
+      )}
+
+      {!isEditing && (
+        <div className="flex items-center gap-1 shrink-0 ml-2">
+          {onUpdateName && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditing(true);
+              }}
+              aria-label={`Editar carpeta ${node.name}`}
+              className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded text-zinc-400 hover:text-blue-500"
+              title="Renombrar carpeta"
+            >
+              <FiEdit3 size={14} aria-hidden="true" />
+            </button>
+          )}
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               handleDelete();
             }}
             aria-label={`Eliminar carpeta ${node.name}`}
-            className="text-red-500 hover:text-red-700 p-1"
+            className="min-w-[24px] min-h-[24px] flex items-center justify-center rounded text-red-500 hover:text-red-700"
             title="Eliminar carpeta"
           >
-            <FiX size={16} />
+            <FiX size={15} aria-hidden="true" />
           </button>
         </div>
       )}
