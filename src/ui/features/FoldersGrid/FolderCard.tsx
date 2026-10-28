@@ -48,7 +48,6 @@ export function FolderCard({
   const folderFavorites = favorites.filter((f) => f.folder === folderPathStr);
   const childrenCount = folder.children?.length ?? 0;
   const hasChildren = childrenCount > 0;
-  const totalDirectItems = folderFavorites.length + childrenCount;
   const isEmpty = folderFavorites.length === 0 && !hasChildren;
 
   // Todas las carpetas (incluyendo raíz) arrancan colapsadas
@@ -168,15 +167,6 @@ export function FolderCard({
                 <h3 className="text-xs leading-tight text-zinc-700 dark:text-zinc-200 truncate select-none flex-1">
                   {folder.name}
                 </h3>
-              )}
-
-              {totalDirectItems > 0 && (
-                <span
-                  className="text-[10px] leading-none font-medium px-1.5 py-0.5 rounded-full bg-zinc-200/80 dark:bg-zinc-700/70 text-zinc-600 dark:text-zinc-300 shrink-0 tabular-nums"
-                  title={`${folderFavorites.length} favorito(s)${childrenCount > 0 ? `, ${childrenCount} subcarpeta(s)` : ""}`}
-                >
-                  {totalDirectItems}
-                </span>
               )}
 
               <motion.span
