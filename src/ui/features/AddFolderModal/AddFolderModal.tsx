@@ -51,8 +51,8 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
       <Modal 
         open={isOpen} 
         onClose={onClose}
-        title="Agregar nueva carpeta"
-        className="bg-white dark:bg-zinc-900"
+        title="Nueva Carpeta"
+        description="Crea una carpeta para organizar tus favoritos visualmente."
       >
         <form
           onSubmit={(e) => {
@@ -60,39 +60,34 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
             handleCreateFolder();
           }}
         >
-          <fieldset
-            className="border border-zinc-300 dark:border-zinc-700 p-4 rounded-md mb-4"
-          >
-            <legend className="text-base font-semibold text-zinc-700 dark:text-white px-1">
-              Información de la carpeta
-            </legend>
-
-            <div className="mb-4">
+          <div className="space-y-3.5 mb-5">
+            <div>
               <label
                 htmlFor="folder-name"
-                className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
+                className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5"
               >
                 Nombre de la carpeta
               </label>
               <input
                 id="folder-name"
                 type="text"
-                placeholder="Ejemplo: Mis documentos"
+                placeholder="Ejemplo: Desarrollo, Noticias, Recursos..."
                 value={folderName}
                 onChange={(e) => setFolderName(e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 rounded-lg bg-zinc-50/50 dark:bg-zinc-800/80 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all"
                 required
                 aria-required="true"
                 disabled={isLoading}
+                autoFocus
               />
             </div>
 
             <div>
               <label
                 htmlFor="folder-parent"
-                className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
+                className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5"
               >
-                Guardar en
+                Ubicación
               </label>
               <select
                 id="folder-parent"
@@ -106,26 +101,26 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
                     );
                   }
                 }}
-                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 rounded-lg bg-zinc-50/50 dark:bg-zinc-800/80 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all cursor-pointer"
                 aria-label="Seleccionar carpeta contenedora"
                 disabled={isLoading}
               >
-                <option value="">Raíz (sin carpeta)</option>
+                <option value="">Raíz (nivel principal)</option>
                 {flattenFolderPaths(folders).map((pathArr) => (
                   <option key={pathArr.join("/")} value={pathArr.join("/")}>
-                    {pathArr.join(" / ")}
+                    📂 {pathArr.join(" / ")}
                   </option>
                 ))}
-                <option value="__explore__">📂 Seleccionar otra carpeta...</option>
+                <option value="__explore__">🔍 Explorar todas las carpetas...</option>
               </select>
             </div>
-          </fieldset>
+          </div>
 
-          <article className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-white rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-600 cursor-pointer transition-colors"
+              className="px-3.5 py-1.5 text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 rounded-lg cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
               aria-label="Cancelar creación de carpeta"
               disabled={isLoading}
             >
@@ -135,12 +130,12 @@ const AddFolderModal = ({ isOpen, onClose }: AddFolderModalProps) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md cursor-pointer disabled:opacity-50 transition-colors"
+              className="px-3.5 py-1.5 text-xs font-medium bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110 text-white rounded-lg cursor-pointer disabled:opacity-50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
               aria-label={isLoading ? "Creando carpeta..." : "Crear nueva carpeta"}
             >
               {isLoading ? "Creando..." : "Crear Carpeta"}
             </button>
-          </article>
+          </div>
         </form>
       </Modal>
 

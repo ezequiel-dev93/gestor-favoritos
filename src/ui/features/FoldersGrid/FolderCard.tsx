@@ -134,14 +134,14 @@ export function FolderCard({
                 }
               }}
               onBlur={handleRenameFolder}
-              className="flex-1 text-sm font-bold bg-transparent border-b border-purple-500 focus:outline-none text-zinc-800 dark:text-zinc-100 pb-0.5"
+              className="flex-1 text-sm font-bold bg-transparent border-b border-cyan-400 focus:outline-none text-zinc-800 dark:text-zinc-100 pb-0.5"
               aria-label="Editar nombre de carpeta"
             />
           ) : (
             // Carpeta raíz o subcarpeta: ambas son clickeables para toggle
             <button
               onClick={() => setIsOpen((prev) => !prev)}
-              className="flex items-center gap-1.5 flex-1 min-w-0 text-left rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+              className="flex items-center gap-1.5 flex-1 min-w-0 text-left rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               aria-expanded={isOpen}
               aria-label={`${isOpen ? "Colapsar" : "Expandir"} carpeta ${folder.name} (${folderFavorites.length} favoritos)`}
             >
@@ -149,13 +149,13 @@ export function FolderCard({
                 <FiFolder
                   size={14}
                   aria-hidden="true"
-                  className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-purple-400"}`}
+                  className={`shrink-0 transition-colors ${isOpen ? "text-cyan-400" : "text-sky-500"}`}
                 />
               ) : (
                 <FiFolder
                   size={12}
                   aria-hidden="true"
-                  className={`shrink-0 transition-colors ${isOpen ? "text-purple-500" : "text-zinc-400"}`}
+                  className={`shrink-0 transition-colors ${isOpen ? "text-cyan-400" : "text-zinc-400"}`}
                 />
               )}
 
@@ -190,7 +190,7 @@ export function FolderCard({
                 {...attributes}
                 aria-label={`Arrastrar carpeta ${folder.name} para reordenar o mover`}
                 title="Arrastrar"
-                className="p-0.5 flex items-center justify-center rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing transition-colors focus-visible:ring-2 focus-visible:ring-purple-500"
+                className="p-0.5 flex items-center justify-center rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing transition-colors focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
                 <RxDragHandleDots2 size={13} aria-hidden="true" />
               </button>

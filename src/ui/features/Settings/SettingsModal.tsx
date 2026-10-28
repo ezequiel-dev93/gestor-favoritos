@@ -96,51 +96,57 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
   };
 
   return (
-    <Modal open={open} onClose={handleClose} title="⚙️ Configuración" className="max-w-lg">
-      <section className="flex flex-col gap-6">
-        <section aria-labelledby="export-heading" className="flex flex-col gap-3">
+    <Modal 
+      open={open} 
+      onClose={handleClose} 
+      title="Configuración" 
+      description="Exporta o restaura tus marcadores y estructura de carpetas."
+      className="max-w-lg"
+    >
+      <section className="flex flex-col gap-5 pt-1">
+        <section aria-labelledby="export-heading" className="flex flex-col gap-2.5">
           <h3
             id="export-heading"
-            className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 uppercase tracking-wider"
+            className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider"
           >
-            Exportar
+            Exportar datos
           </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Descarga un archivo <code className="bg-zinc-100 dark:bg-zinc-700 px-1 rounded text-xs">.json</code> con
-            todos tus favoritos y carpetas. Podés usarlo como backup o para importarlo en otro dispositivo.
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Descarga un archivo <code className="bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-xs text-cyan-600 dark:text-cyan-400 font-mono">.json</code> con
+            todos tus favoritos y carpetas. Podés usarlo como backup o para sincronizarlo en otro navegador.
           </p>
           <button
             onClick={handleExport}
             disabled={isExporting}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg transition-colors w-fit cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-2 text-xs font-medium bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110 disabled:opacity-50 text-white rounded-lg transition-all w-fit cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             aria-label="Descargar backup de favoritos"
           >
             <FiDownload size={15} />
-            {isExporting ? "Descargando..." : "Descargar backup"}
+            {isExporting ? "Descargando..." : "Descargar backup .json"}
           </button>
         </section>
 
-        <hr className="border-zinc-200 dark:border-zinc-700" />
+        <hr className="border-zinc-200 dark:border-zinc-800" />
 
-        <section aria-labelledby="import-heading" className="flex flex-col gap-3">
+        <section aria-labelledby="import-heading" className="flex flex-col gap-2.5">
           <h3
             id="import-heading"
-            className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 uppercase tracking-wider"
+            className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider"
           >
-            Importar
+            Importar datos
           </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
             Seleccioná un archivo{" "}
-            <code className="bg-zinc-100 dark:bg-zinc-700 px-1 rounded text-xs">.json</code>
+            <code className="bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-xs text-cyan-600 dark:text-cyan-400 font-mono">.json</code>
             {" "}exportado previamente, o un archivo{" "}
-            <code className="bg-zinc-100 dark:bg-zinc-700 px-1 rounded text-xs">.html</code>
-            {" "}exportado desde Chrome o Brave para restaurar tus favoritos.
+            <code className="bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-xs text-cyan-600 dark:text-cyan-400 font-mono">.html</code>
+            {" "}de Chrome o Brave para restaurar tus favoritos.
           </p>
 
           <div className="flex items-center gap-3">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-zinc-300 dark:border-zinc-600 hover:border-purple-500 dark:hover:border-purple-400 rounded-lg transition-colors w-fit cursor-pointer text-zinc-700 dark:text-zinc-200"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-zinc-300 dark:border-zinc-600 hover:border-cyan-400 dark:hover:border-cyan-400 rounded-lg transition-colors w-fit cursor-pointer text-zinc-700 dark:text-zinc-200"
               aria-label="Seleccionar archivo de importación"
             >
               <FiUpload size={15} />
@@ -166,11 +172,11 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
             <div className="flex flex-col gap-4 p-3 rounded-lg bg-zinc-50 dark:bg-zinc-700/40 border border-zinc-200 dark:border-zinc-600">
               <div className="flex gap-4">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-purple-500">{preview.favorites.length}</p>
+                  <p className="text-2xl font-bold text-cyan-400">{preview.favorites.length}</p>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">favoritos</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-cyan-500">{preview.folders.length}</p>
+                  <p className="text-2xl font-bold text-sky-400">{preview.folders.length}</p>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">carpetas raíz</p>
                 </div>
               </div>
@@ -186,7 +192,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
                     value="merge"
                     checked={strategy === "merge"}
                     onChange={() => setStrategy("merge")}
-                    className="mt-0.5 accent-purple-600"
+                    className="mt-0.5 accent-cyan-500"
                   />
                   <span className="text-sm text-zinc-700 dark:text-zinc-200">
                     <strong>Combinar</strong>
@@ -200,7 +206,7 @@ export function SettingsModal({ open, onClose, onImportDone }: SettingsModalProp
                     value="replace"
                     checked={strategy === "replace"}
                     onChange={() => setStrategy("replace")}
-                    className="mt-0.5 accent-purple-600"
+                    className="mt-0.5 accent-cyan-500"
                   />
                   <span className="text-sm text-zinc-700 dark:text-zinc-200">
                     <strong>Reemplazar</strong>

@@ -40,7 +40,7 @@ export function FolderMenu({
         aria-label="Opciones de carpeta"
         aria-expanded={showMenu}
         aria-haspopup="menu"
-        className={`p-0.5 flex items-center justify-center transition-colors rounded focus-visible:ring-2 focus-visible:ring-purple-500 ${showMenu
+        className={`p-0.5 flex items-center justify-center transition-colors rounded focus-visible:ring-2 focus-visible:ring-cyan-400 ${showMenu
             ? "bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-100"
             : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50"
           }`}
@@ -78,7 +78,7 @@ export function FolderMenu({
                   }}
                   className="flex items-center gap-2.5 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors text-left"
                 >
-                  <FiPlus size={14} className="text-purple-500 shrink-0" aria-hidden="true" />
+                  <FiPlus size={14} className="text-cyan-400 shrink-0" aria-hidden="true" />
                   <span className="truncate">Agregar Favorito</span>
                 </button>
 
@@ -90,7 +90,7 @@ export function FolderMenu({
                   }}
                   className="flex items-center gap-2.5 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors text-left"
                 >
-                  <FiEdit3 size={14} className="text-blue-500 shrink-0" aria-hidden="true" />
+                  <FiEdit3 size={14} className="text-sky-400 shrink-0" aria-hidden="true" />
                   <span className="truncate">Renombrar</span>
                 </button>
 

@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 const AUTHOR_URL = "https://ezequielsuarez-dev.com";
 
 /** Colores en sintonía con la paleta del proyecto */
-const CONFETTI_COLORS = ["#8b5cf6", "#06b6d4", "#a78bfa", "#22d3ee", "#f0abfc", "#ffffff"];
+const CONFETTI_COLORS = ["#00e5ff", "#0284c7", "#38bdf8", "#67e8f9", "#e2e8f0", "#ffffff"];
 
 /**
  * Footer — lanza una animación de confeti al hacer click en el enlace del autor,
@@ -45,7 +45,7 @@ export function Footer() {
           href={AUTHOR_URL}
           onClick={handleAuthorClick}
           rel="noopener noreferrer"
-          className="text-zinc-700 dark:text-zinc-200 hover:text-purple-600 dark:hover:text-purple-400 underline font-medium transition-colors duration-200 cursor-pointer rounded focus-visible:ring-2 focus-visible:ring-purple-500"
+          className="text-zinc-700 dark:text-zinc-200 hover:text-cyan-600 dark:hover:text-cyan-400 underline font-medium transition-colors duration-200 cursor-pointer rounded focus-visible:ring-2 focus-visible:ring-cyan-400"
           aria-label="Visitar el sitio web de Ezequiel Suárez"
         >
           Ezequiel Suárez

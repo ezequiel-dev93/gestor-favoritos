@@ -94,7 +94,7 @@ export function FavoriteRow({ fav, onDelete }: FavoriteRowProps) {
             if (e.key === "Escape") handleCancel();
           }}
           onBlur={handleSave}
-          className="flex-1 text-sm bg-transparent border-b border-purple-500 focus:outline-none text-zinc-800 dark:text-zinc-100 pb-0.5 min-w-0"
+          className="flex-1 text-sm bg-transparent border-b border-cyan-400 focus:outline-none text-zinc-800 dark:text-zinc-100 pb-0.5 min-w-0"
           aria-label="Editar titulo del favorito"
         />
       ) : (
@@ -103,7 +103,7 @@ export function FavoriteRow({ fav, onDelete }: FavoriteRowProps) {
             href={fav.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 truncate flex-1 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+            className="text-sm text-zinc-700 dark:text-zinc-300 hover:text-cyan-600 dark:hover:text-cyan-400 truncate flex-1 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             title={fav.url}
             aria-label={`Abrir ${fav.title}`}
           >
@@ -116,7 +116,7 @@ export function FavoriteRow({ fav, onDelete }: FavoriteRowProps) {
             }}
             aria-label={`Editar ${fav.title}`}
             title="Editar nombre"
-            className="min-w-[22px] min-h-[22px] flex items-center justify-center rounded text-zinc-400 hover:text-blue-500 opacity-0 group-hover/fav:opacity-100 group-focus-within/fav:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0"
+            className="min-w-[22px] min-h-[22px] flex items-center justify-center rounded text-zinc-400 hover:text-sky-400 opacity-0 group-hover/fav:opacity-100 group-focus-within/fav:opacity-100 focus-visible:opacity-100 transition-opacity shrink-0"
           >
             <FiEdit3 size={12} aria-hidden="true" />
           </button>

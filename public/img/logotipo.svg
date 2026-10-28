@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Fondo Azul Profundo (#0B1220) según Manual de Marca -->
+    <linearGradient id="bg-deep" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0D1627"/>
+      <stop offset="50%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#070C17"/>
+    </linearGradient>
+
+    <!-- Atmósfera sutil Cian detrás del Monograma (como en la muestra 1) -->
+    <radialGradient id="ambient-cyan" cx="52%" cy="50%" r="48%">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.12"/>
+      <stop offset="60%" stop-color="#0284C7" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#0B1220" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Gradiente Plata / Acero para Marco Exterior 'E' -->
+    <linearGradient id="e-metal" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#E5E7EB"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+
+    <!-- Gradiente Barra Central 'E' (Fade desde el poste hacia Cian Eléctrico) -->
+    <linearGradient id="e-mid-cyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.04"/>
+      <stop offset="28%" stop-color="#0284C7" stop-opacity="0.72"/>
+      <stop offset="68%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+
+    <!-- Gradiente Cian Eléctrico para Letra 'S' -->
+    <linearGradient id="s-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#67E8F9"/>
+      <stop offset="45%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base Cuadrada 400x400 (apta tanto para recorte circular de LinkedIn como para ícono) -->
+  <rect width="400" height="400" rx="48" fill="url(#bg-deep)"/>
+  <rect width="400" height="400" rx="48" fill="url(#ambient-cyan)"/>
+
+  <!-- Monograma "ES" Principal Centrado con Área de Seguridad -->
+  <!-- Dimensiones base del monograma: 110 x 124 -> Escala 1.85 = 203.5 x 229.4 -->
+  <g transform="translate(98, 85) scale(1.85)">
+    <!-- Letra 'E': Marco Exterior Platino / Blanco con esquina inferior redondeada y cortes diagonales -->
+    <path
+      d="M 0 0 L 90 0 L 79 15 L 15 15 L 15 72 Q 15 79 22 79 L 37 79 L 48 94 L 20 94 Q 0 94 0 74 Z"
+      fill="url(#e-metal)"
+    />
+
+    <!-- Barra Central de la 'E': Cian con desvanecimiento hacia la izquierda y corte biselado derecho -->
+    <path
+      d="M 15 36 L 90 36 L 101 51 L 99 52.5 L 77 52.5 L 75 51 L 15 51 Z"
+      fill="url(#e-mid-cyan)"
+    />
+
+    <!-- Letra 'S': Cian Eléctrico con remate superior curvo hacia arriba y corte diagonal inferior -->
+    <path
+      d="M 45 53 Q 46 66 56 66 L 82 66 C 99 66 110 77 110 95 C 110 113 99 124 82 124 L 48 124 L 37 108 L 81 108 C 89 108 94 103 94 95 C 94 87 89 82 81 82 L 50 82 C 40 82 35 76 35 68 C 35 61 39 56 45 53 Z"
+      fill="url(#s-cyan)"
+    />
+  </g>
+</svg>

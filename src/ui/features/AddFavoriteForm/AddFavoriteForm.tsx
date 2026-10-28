@@ -67,9 +67,9 @@ export default function AddFavoriteForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4">
+    <form onSubmit={handleSubmit} className="space-y-3.5 pt-1">
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="title" className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
           Título
         </label>
         <input
@@ -77,16 +77,15 @@ export default function AddFavoriteForm({
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm 
-             focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 
-             dark:border-gray-600 bg-transparent dark:text-white"
+          className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-800/80 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all"
           placeholder="Nombre del favorito"
           disabled={isLoading}
+          autoFocus
         />
       </div>
       
       <div>
-        <label htmlFor="url" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="url" className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
           URL
         </label>
         <input
@@ -94,21 +93,21 @@ export default function AddFavoriteForm({
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm 
-             focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 
-             dark:border-gray-600 bg-transparent dark:text-white"
+          className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-800/80 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all"
           placeholder="https://example.com"
           disabled={isLoading}
         />
       </div>
       
-      <button
-        type="submit"
-        disabled={isLoading || (!initialFolder && !selectedFolder)}
-        className="w-full rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 dark:bg-purple-500 dark:hover:bg-purple-600"
-      >
-        {isLoading ? 'Agregando...' : 'Agregar Favorito'}
-      </button>
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={isLoading || (!initialFolder && !selectedFolder)}
+          className="w-full rounded-lg bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-600 hover:brightness-110 px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 cursor-pointer transition-all shadow-sm"
+        >
+          {isLoading ? 'Agregando...' : 'Agregar Favorito'}
+        </button>
+      </div>
     </form>
   );
 }

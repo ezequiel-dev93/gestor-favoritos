@@ -23,7 +23,7 @@ export function FolderInnerDropzone({ folderPathStr }: FolderInnerDropzoneProps)
     <div
       ref={setNodeRef}
       className={`mt-1 px-2 py-1 border border-dashed rounded-md text-center transition-colors ${isOver
-          ? "border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-400"
+          ? "border-cyan-400 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
           : "border-zinc-300/80 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400"
         }`}
     >

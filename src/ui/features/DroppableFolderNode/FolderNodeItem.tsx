@@ -66,7 +66,7 @@ export const FolderNodeItem: React.FC<FolderNodeItemProps> = ({
     <article
       className={`flex items-center justify-between px-2 py-1 rounded-md transition-colors ${
         isSelected
-          ? "bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-100 font-medium"
+          ? "bg-cyan-100 dark:bg-cyan-950/50 text-cyan-900 dark:text-cyan-200 font-medium"
           : "hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
       }`}
       style={{ paddingLeft: `${level * 1.25 + 0.5}rem` }}
@@ -76,7 +76,7 @@ export const FolderNodeItem: React.FC<FolderNodeItemProps> = ({
           <FcOpenedFolder aria-hidden="true" className="shrink-0" />
           <input
             type="text"
-            className="flex-1 rounded border border-zinc-300 dark:border-zinc-700 px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+            className="flex-1 rounded border border-zinc-300 dark:border-zinc-700 px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => {
@@ -94,7 +94,7 @@ export const FolderNodeItem: React.FC<FolderNodeItemProps> = ({
               e.stopPropagation();
               handleEdit();
             }}
-            className="text-xs text-purple-600 dark:text-purple-400 hover:underline px-1.5 py-0.5"
+            className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline px-1.5 py-0.5"
             disabled={isLoading}
             aria-label="Guardar nombre"
           >
@@ -107,7 +107,7 @@ export const FolderNodeItem: React.FC<FolderNodeItemProps> = ({
           onClick={handleToggle}
           aria-pressed={isSelected}
           aria-expanded={hasChildren ? isOpen : undefined}
-          className="flex items-center gap-1.5 flex-1 text-left text-sm min-w-0 py-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 cursor-pointer"
+          className="flex items-center gap-1.5 flex-1 text-left text-sm min-w-0 py-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer"
         >
           {hasChildren && (
             <FiChevronRight

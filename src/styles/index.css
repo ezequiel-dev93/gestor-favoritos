@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --app-bg: radial-gradient(circle at 90% 5%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 4vw, transparent 20vw),
-    radial-gradient(circle at 10% 14%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 4vw, transparent 20vw),
-    radial-gradient(circle at 70% 45%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 2vw, transparent 20vw),
-    radial-gradient(circle at 14% 67%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 8vw, transparent 20vw),
-    radial-gradient(circle at 78% 90%, oklab(66.455% 0.27318 -0.06674 / 0.15) 0%, rgba(255, 0, 182, 0.05) 8vw, transparent 20vw),
-    linear-gradient(90deg, rgb(0, 0, 0), rgb(0, 0, 0));
-  --app-text: #ffffff;
+  --app-bg: radial-gradient(circle at 90% 8%, rgba(0, 229, 255, 0.08) 0%, rgba(2, 132, 199, 0.04) 15vw, transparent 35vw),
+    radial-gradient(circle at 8% 18%, rgba(2, 132, 199, 0.08) 0%, rgba(0, 229, 255, 0.03) 12vw, transparent 30vw),
+    radial-gradient(circle at 75% 55%, rgba(0, 229, 255, 0.05) 0%, rgba(2, 132, 199, 0.02) 10vw, transparent 25vw),
+    radial-gradient(circle at 18% 75%, rgba(2, 132, 199, 0.07) 0%, transparent 25vw),
+    radial-gradient(circle at 80% 92%, rgba(0, 229, 255, 0.06) 0%, transparent 22vw),
+    linear-gradient(180deg, #070c17 0%, #000000 100%);
+  --app-text: #f8fafc;
   color-scheme: light dark;
 }
 
@@ -42,13 +42,16 @@ a {
 
 @media (prefers-color-scheme: light) {
   :root {
-    --app-bg: #ffffff;
-    --app-text: #26282a;
+    --app-bg: radial-gradient(circle at 90% 8%, rgba(0, 229, 255, 0.12) 0%, rgba(2, 132, 199, 0.05) 15vw, transparent 35vw),
+      radial-gradient(circle at 8% 18%, rgba(2, 132, 199, 0.08) 0%, transparent 30vw),
+      radial-gradient(circle at 75% 55%, rgba(0, 229, 255, 0.06) 0%, transparent 25vw),
+      linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    --app-text: #0f172a;
   }
 }
 
 :focus-visible {
-  outline: 2px solid #a855f7;
+  outline: 2px solid #00e5ff;
   outline-offset: 2px;
 }
 

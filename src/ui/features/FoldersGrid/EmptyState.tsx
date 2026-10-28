@@ -7,12 +7,12 @@ interface EmptyStateProps {
 }
 
 const ORBIT_DOTS = [
-  { delay: 0, size: "size-1.5", color: "bg-purple-400", duration: 10 },
-  { delay: 0.4, size: "size-1", color: "bg-cyan-400", duration: 13 },
-  { delay: 0.8, size: "size-2", color: "bg-purple-300", duration: 16 },
-  { delay: 1.2, size: "size-1", color: "bg-pink-400", duration: 11 },
+  { delay: 0, size: "size-1.5", color: "bg-cyan-400", duration: 10 },
+  { delay: 0.4, size: "size-1", color: "bg-sky-400", duration: 13 },
+  { delay: 0.8, size: "size-2", color: "bg-blue-400", duration: 16 },
+  { delay: 1.2, size: "size-1", color: "bg-teal-400", duration: 11 },
   { delay: 1.6, size: "size-1.5", color: "bg-cyan-300", duration: 14 },
-  { delay: 2.0, size: "size-1", color: "bg-purple-500", duration: 9 },
+  { delay: 2.0, size: "size-1", color: "bg-sky-500", duration: 9 },
 ] as const;
 
 /*
@@ -33,12 +33,12 @@ export function EmptyState({ onCreateFolder, onImportClick }: EmptyStateProps) {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-          className="absolute size-36 rounded-full border border-dashed border-purple-500/20"
+          className="absolute size-36 rounded-full border border-dashed border-cyan-500/20"
         />
         <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute size-24 rounded-full border border-dashed border-purple-400/30"
+          className="absolute size-24 rounded-full border border-dashed border-cyan-400/30"
         />
 
         {ORBIT_DOTS.map((dot, i) => (
@@ -60,9 +60,9 @@ export function EmptyState({ onCreateFolder, onImportClick }: EmptyStateProps) {
         <motion.div
           animate={{ scale: [1, 1.06, 1] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="relative z-10 flex items-center justify-center size-16 rounded-2xl bg-zinc-900 border border-purple-500/30 shadow-lg shadow-purple-500/10"
+          className="relative z-10 flex items-center justify-center size-16 rounded-2xl bg-zinc-900 border border-cyan-500/30 shadow-lg shadow-cyan-500/10"
         >
-          <FiFolder size={28} className="text-purple-400" />
+          <FiFolder size={28} className="text-cyan-400" />
         </motion.div>
       </div>
 
@@ -94,15 +94,15 @@ export function EmptyState({ onCreateFolder, onImportClick }: EmptyStateProps) {
       >
         <button
           onClick={onCreateFolder}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-all hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-purple-500/20 cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110 text-white text-sm font-medium transition-all hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-cyan-500/20 cursor-pointer"
         >
           <FiFolderPlus size={15} />
           Crear primera carpeta
         </button>
-        <span className="text-xs text-zinc-600">o</span>
+        <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">o</span>
         <button
           onClick={onImportClick}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-700 hover:border-zinc-500 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-all hover:scale-[1.03] active:scale-[0.97] cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/60 hover:bg-zinc-50 dark:hover:bg-zinc-700/60 hover:border-cyan-500 dark:hover:border-cyan-400 text-zinc-700 dark:text-zinc-300 hover:text-cyan-600 dark:hover:text-cyan-300 text-sm font-medium transition-all hover:scale-[1.03] active:scale-[0.97] shadow-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
         >
           <FiUploadCloud size={15} />
           Importar favoritos

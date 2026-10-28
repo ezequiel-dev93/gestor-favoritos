@@ -1,4 +1,4 @@
-﻿import { useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import { motion } from "framer-motion";
 
 /*
@@ -14,7 +14,7 @@ export function RootDropzone() {
       animate={{ height: 48, opacity: 1 }}
       exit={{ height: 0, opacity: 0 }}
       className={`w-full flex items-center justify-center rounded-xl border-2 border-dashed mb-4 transition-colors ${isOver
-          ? "border-purple-500 bg-purple-500/10 text-purple-500"
+          ? "border-cyan-400 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
           : "border-zinc-300 dark:border-zinc-700 bg-zinc-100/50 dark:bg-zinc-800/50 text-zinc-500"
         }`}
     >

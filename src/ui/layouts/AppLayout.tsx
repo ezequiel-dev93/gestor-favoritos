@@ -61,14 +61,14 @@ export function AppLayout() {
         >
           <button
             onClick={() => setShowAddFavorite(true)}
-            className="px-3 py-1 text-xs bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:brightness-110 text-white font-medium rounded-md cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-purple-400"
+            className="px-3 py-1 text-xs bg-gradient-to-r from-cyan-500 via-sky-600 to-blue-600 hover:brightness-110 text-white font-medium rounded-md cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-cyan-400"
             aria-label="Agregar un nuevo favorito"
           >
             + Agregar Favorito
           </button>
           <button
             onClick={() => setShowAddFolder(true)}
-            className="px-2.5 py-0.5 text-[11px] bg-gradient-to-r from-cyan-700 via-cyan-600 to-cyan-500 hover:brightness-110 text-white font-medium rounded-md cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="px-2.5 py-0.5 text-[11px] bg-zinc-800/80 hover:bg-zinc-700/80 border border-cyan-500/30 hover:border-cyan-400 text-cyan-200 dark:text-cyan-100 font-medium rounded-md cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-cyan-400"
             aria-label="Crear nueva carpeta"
           >
             + Nueva Carpeta

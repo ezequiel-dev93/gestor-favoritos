@@ -36,23 +36,28 @@ export const AddFavoriteModal: React.FC<AddFavoriteModalProps> = ({
 
   return (
     <>
-      <Modal open={open} onClose={onClose} title="Guardar favorito">
+      <Modal 
+        open={open} 
+        onClose={onClose} 
+        title="Guardar favorito"
+        description="Agrega un nuevo enlace y asígnalo a una carpeta."
+      >
         <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-2 px-4 pt-1">
+          <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60">
             <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
               Carpeta:{" "}
-              <strong className="text-zinc-800 dark:text-zinc-200">
+              <strong className="text-zinc-800 dark:text-zinc-100 font-semibold">
                 {selectedFolder && selectedFolder.length > 0
                   ? selectedFolder.join(" / ")
-                  : "Ninguna seleccionada"}
+                  : "Raíz (sin carpeta)"}
               </strong>
             </span>
             <button
               type="button"
               onClick={() => setFolderExplorerOpen(true)}
-              className="text-xs px-3 py-1.5 shrink-0 bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:brightness-110 text-white focus:ring-2 focus:outline-none focus:ring-purple-400 font-medium rounded-lg text-center cursor-pointer transition-all"
+              className="text-xs px-2.5 py-1 shrink-0 bg-gradient-to-r from-cyan-500 via-sky-600 to-blue-600 hover:brightness-110 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 font-medium rounded-md text-center cursor-pointer transition-all shadow-sm"
             >
-              {selectedFolder ? "Cambiar carpeta" : "Seleccionar carpeta"}
+              {selectedFolder ? "Cambiar" : "Elegir carpeta"}
             </button>
           </div>
 
